@@ -1,13 +1,12 @@
 "use client";
 
 import MainHeader from './components/MainHeader/MainHeader';
-import {useState, useEffect, useRef, useMemo} from 'react';
+import {useState, useRef} from 'react';
 import {Canvas, useFrame} from "@react-three/fiber";
-import {Instances, Instance, Text3D, Center, Float, RoundedBox} from "@react-three/drei";
+import {Instances, Instance, Text3D, Center} from "@react-three/drei";
 import {random} from 'mathjs';
 
 import './page.css';
-import * as THREE from "three";
 
 const particleSpeed = 0.5;
 
@@ -37,7 +36,7 @@ export default function Home() {
                             ))}
                             <Center>
                                 <Text3D font={'/fonts/inter/Inter_Bold.json'} size={30} height={3}
-                                        bevelEnabled bevelSize={0.6} bevelSegments={512} letterSpacing={1.1}>
+                                        bevelEnabled bevelSize={0.6} bevelSegments={2} letterSpacing={1.1}>
                                     Shashank
                                     <meshNormalMaterial/>
                                 </Text3D>
@@ -52,7 +51,6 @@ export default function Home() {
 
 function Square({xFactor, zFactor, xSpeed, zSpeed, xRotFactor}) {
     const ref = useRef();
-    const [hovered, setHovered] = useState(false);
     const [isInitState, setIsInitState] = useState(true);
 
     useFrame((state) => {
