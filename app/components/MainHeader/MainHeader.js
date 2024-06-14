@@ -48,21 +48,23 @@ export default function MainHeader() {
                 {
                     showContacts ?
                         <div>
-                            <p onMouseEnter={handleMouseHoverEvent} className={'header-text font-inter font-bold'}>
+                            <p className={'header-text font-inter font-bold'}>
                                 Contact Me
                             </p>
                             <div className={'flex'} onMouseLeave={handleMouseHoverEvent}>
-                                <a target={'_blank'} href={'https://github.com/SpyGuy0215'}>
+                                <a target={'_blank'} rel={"noopener noreferrer"} href={'https://github.com/SpyGuy0215'}>
                                     <Image className={'invert header-icon'} src={'/icons/github.svg'} width={50}
                                            height={50}
                                            alt="github"/>
                                 </a>
-                                <a target={'_blank'} href={'https://www.linkedin.com/in/shashank-prasanna/'}>
+                                <a target={'_blank'} rel={"noopener noreferrer"}
+                                   href={'https://www.linkedin.com/in/shashank-prasanna/'}>
                                     <Image className={'invert header-icon'} src={'/icons/linkedin.svg'} width={50}
                                            height={50}
                                            alt="linkedin"/>
                                 </a>
-                                <a target={'_blank'} href={'mailto:shashankprasanna1@gmail.com'}>
+                                <a target={'_blank'} rel={"noopener noreferrer"}
+                                   href={'mailto:shashankprasanna1@gmail.com'}>
                                     <Image className={'invert header-icon'} src={'/icons/gmail.svg'} width={50}
                                            height={50}
                                            alt="mail"/>
@@ -70,7 +72,7 @@ export default function MainHeader() {
                             </div>
                         </div>
                         :
-                        <p onMouseEnter={handleMouseHoverEvent} className={'header-text font-inter font-bold'}>
+                        <p className={'header-text font-inter font-bold'}>
                             Contact Me
                         </p>
                 }
