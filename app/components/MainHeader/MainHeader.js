@@ -19,7 +19,7 @@ export default function MainHeader() {
     }
 
     function handleMenuMouseDownEvent() {
-        if(isAnimComplete) {
+        if (isAnimComplete) {
             setShowMenu(!showMenu);
             setPlayState(true); //start playing the animation
             setIsAnimComplete(false);
@@ -37,7 +37,7 @@ export default function MainHeader() {
         }
     }
 
-    // noinspection JSValidateTypes
+    // TODO: Show the Contact Me items under the Contact Me text when the user clicks over it for better UX
     return (
         <div className='header-div'>
             <div className='header-element' onMouseDown={handleMenuMouseDownEvent}>
@@ -47,23 +47,31 @@ export default function MainHeader() {
             <div className='header-element'>
                 {
                     showContacts ?
-                        <div className={'flex'} onMouseLeave={handleMouseHoverEvent}>
-                            <a target={'_blank'} href={'https://github.com/SpyGuy0215'}>
-                                <Image className={'invert header-icon'} src={'/icons/github.svg'} width={50} height={50}
-                                       alt="github"/>
-                            </a>
-                            <a target={'_blank'} href={'https://www.linkedin.com/in/shashank-prasanna/'}>
-                                <Image className={'invert header-icon'} src={'/icons/linkedin.svg'} width={50}
-                                       height={50}
-                                       alt="linkedin"/>
-                            </a>
-                            <a target={'_blank'} href={'mailto:shashankprasanna1@gmail.com'}>
-                                <Image className={'invert header-icon'} src={'/icons/gmail.svg'} width={50} height={50}
-                                       alt="mail"/>
-                            </a>
+                        <div>
+                            <p onMouseEnter={handleMouseHoverEvent} className={'header-text font-inter font-bold'}>
+                                Contact Me
+                            </p>
+                            <div className={'flex'} onMouseLeave={handleMouseHoverEvent}>
+                                <a target={'_blank'} href={'https://github.com/SpyGuy0215'}>
+                                    <Image className={'invert header-icon'} src={'/icons/github.svg'} width={50}
+                                           height={50}
+                                           alt="github"/>
+                                </a>
+                                <a target={'_blank'} href={'https://www.linkedin.com/in/shashank-prasanna/'}>
+                                    <Image className={'invert header-icon'} src={'/icons/linkedin.svg'} width={50}
+                                           height={50}
+                                           alt="linkedin"/>
+                                </a>
+                                <a target={'_blank'} href={'mailto:shashankprasanna1@gmail.com'}>
+                                    <Image className={'invert header-icon'} src={'/icons/gmail.svg'} width={50}
+                                           height={50}
+                                           alt="mail"/>
+                                </a>
+                            </div>
                         </div>
                         :
-                        <p onMouseEnter={handleMouseHoverEvent} className={'header-text'}>Contact Me
+                        <p onMouseEnter={handleMouseHoverEvent} className={'header-text font-inter font-bold'}>
+                            Contact Me
                         </p>
                 }
             </div>

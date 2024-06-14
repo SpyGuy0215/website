@@ -21,7 +21,7 @@ const particles = Array.from({length: 24}, () => ({
 export default function Home() {
 
     return (
-        <div className={'flex flex-col min-h-screen border border-green-500'}>
+        <div className={'flex flex-col min-h-screen'}>
             <MainHeader/>
             <div className={'main-container flex grow'}>
                 <div id={'particle-container'} className={'grow w-full'}>
