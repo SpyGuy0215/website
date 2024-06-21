@@ -3,10 +3,11 @@
 import MainHeader from './components/MainHeader/MainHeader';
 import {useState, useRef} from 'react';
 import {Canvas, useFrame} from "@react-three/fiber";
-import {Instances, Instance, Text3D, Center} from "@react-three/drei";
+import {Instances, Instance, Text3D, Center, PerformanceMonitor} from "@react-three/drei";
 import {random} from 'mathjs';
 
 import './page.css';
+import Image from "next/image";
 
 const particleSpeed = 0.5;
 
@@ -22,8 +23,8 @@ export default function Home() {
 
     return (
         <div className={'flex flex-col min-h-screen'}>
-            <MainHeader/>
-            <div className={'main-container flex grow'}>
+            {/*<MainHeader/>*/}
+            <div className={'main-container flex grow relative'}>
                 <div id={'particle-container'} className={'grow w-full'}>
                     <Canvas camera={{position: [0, 0, 100]}}>
                         <ambientLight intensity={1.5}/>
@@ -43,6 +44,11 @@ export default function Home() {
                             </Center>
                         </Instances>
                     </Canvas>
+                </div>
+                <div id={'scroll-down-indicator'}
+                     className={'animate-bounce absolute rounded-full border-2 self-end mb-20 backdrop-blur-md'}>
+                    <Image src={'/images/down-arrow.svg'} alt={'down arrow'} width={45} height={45} unoptimized
+                           className={'invert'} priority={true}/>
                 </div>
             </div>
         </div>

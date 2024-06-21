@@ -15,6 +15,15 @@ module.exports = {
       fontFamily: {
         inter: ["Inter", "sans-serif"],
       },
+      animation:{
+        'highlight': 'highlight 0.5s forwards',
+      },
+      keyframes:{
+        highlight: {
+          '0%': {filter: 'invert(0)'},
+          '100%': {filter: 'invert(1)'}
+        },
+      }
     },
   },
   plugins: [],

@@ -44,39 +44,43 @@ export default function MainHeader() {
                 <Lottie animationData={menuAnimation} play={playState} segments={[0, 12]}
                         loop={false} className={'invert'} onComplete={handleLottieComplete} direction={playDirection}/>
             </div>
-            <div className='header-element'>
-                {
-                    showContacts ?
-                        <div>
-                            <p className={'header-text font-inter font-bold'}>
-                                Contact Me
-                            </p>
-                            <div className={'flex'} onMouseLeave={handleMouseHoverEvent}>
-                                <a target={'_blank'} rel={"noopener noreferrer"} href={'https://github.com/SpyGuy0215'}>
-                                    <Image className={'invert header-icon'} src={'/icons/github.svg'} width={50}
-                                           height={50}
-                                           alt="github"/>
-                                </a>
-                                <a target={'_blank'} rel={"noopener noreferrer"}
-                                   href={'https://www.linkedin.com/in/shashank-prasanna/'}>
-                                    <Image className={'invert header-icon'} src={'/icons/linkedin.svg'} width={50}
-                                           height={50}
-                                           alt="linkedin"/>
-                                </a>
-                                <a target={'_blank'} rel={"noopener noreferrer"}
-                                   href={'mailto:shashankprasanna1@gmail.com'}>
-                                    <Image className={'invert header-icon'} src={'/icons/gmail.svg'} width={50}
-                                           height={50}
-                                           alt="mail"/>
-                                </a>
-                            </div>
-                        </div>
-                        :
-                        <p className={'header-text font-inter font-bold'}>
-                            Contact Me
-                        </p>
-                }
+            <div className='header-element hover:animate-highlight bg-black'>
+                <button className={'header-text font-inter font-bold'} type={'button'}>
+                    Contact Me
+                </button>
             </div>
+            {/*<div className='header-element'>*/}
+            {/*    {*/}
+            {/*        showContacts ?*/}
+            {/*            <div>*/}
+            {/*                <p className={'header-text font-inter font-bold'}>*/}
+            {/*                    Contact Me*/}
+            {/*                </p>*/}
+            {/*                <div className={'flex'} onMouseLeave={handleMouseHoverEvent}>*/}
+            {/*                    <a target={'_blank'} rel={"noopener noreferrer"} href={'https://github.com/SpyGuy0215'}>*/}
+            {/*                        <Image className={'invert header-icon'} src={'/icons/github.svg'} width={50}*/}
+            {/*                               height={50}*/}
+            {/*                               alt="github"/>*/}
+            {/*                    </a>*/}
+            {/*                    <a target={'_blank'} rel={"noopener noreferrer"}*/}
+            {/*                       href={'https://www.linkedin.com/in/shashank-prasanna/'}>*/}
+            {/*                        <Image className={'invert header-icon'} src={'/icons/linkedin.svg'} width={50}*/}
+            {/*                               height={50}*/}
+            {/*                               alt="linkedin"/>*/}
+            {/*                    </a>*/}
+            {/*                    <a target={'_blank'} rel={"noopener noreferrer"}*/}
+            {/*                       href={'mailto:shashankprasanna1@gmail.com'}>*/}
+            {/*                        <Image className={'invert header-icon'} src={'/icons/gmail.svg'} width={50}*/}
+            {/*                               height={50}*/}
+            {/*                               alt="mail"/>*/}
+            {/*                    </a>*/}
+            {/*                </div>*/}
+            {/*            </div>*/}
+            {/*            :*/}
+            {/*            <button className={'header-text font-inter font-bold hover:animate-highlight'}>*/}
+            {/*                Contact Me*/}
+            {/*            </button>*/}
+            {/*    }*/}
         </div>
     )
 }
