@@ -1,3 +1,7 @@
+* {
+    scroll-behavior: smooth;
+}
+
 body {
     background-color: #121212;
     font-family: Arial, sans-serif;
@@ -5,20 +9,8 @@ body {
     padding: 0;
 }
 
-.main-container {
+.section-1 {
     @apply flex;
     height: 100%;
     justify-content: center;
-}
-
-.name {
-    @apply font-bold;
-    color: transparent;
-    font-size: 9em;
-    margin: 0;
-    padding: 0;
-
-    /* Apply a gradient animation to the name text*/
-    background-image: linear-gradient(90deg, #7E80F6, #61FFC0);
-    background-clip: text;
 }

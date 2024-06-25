@@ -14,6 +14,7 @@ module.exports = {
       },
       fontFamily: {
         inter: ["Inter", "sans-serif"],
+        raleway: ["Raleway", "sans-serif"],
       },
       animation:{
         'highlight': 'highlight 0.5s forwards',
@@ -26,5 +27,8 @@ module.exports = {
       }
     },
   },
-  plugins: [],
+  plugins: [
+      require('tailwind-scrollbar')({nocompatible: true, preferredStrategy: "pseudoelements"}),
+      require('tailwind-scrollbar-hide')
+  ],
 };
