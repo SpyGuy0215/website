@@ -1,10 +1,9 @@
 "use client";
 
 import {useState, useRef, useEffect} from 'react';
-import {Canvas, useFrame, useLoader} from "@react-three/fiber";
-import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+import {Canvas, useFrame} from "@react-three/fiber";
 import Image from "next/image";
-import {Instances, Instance, Text3D, Center, Float, Stars} from "@react-three/drei";
+import {Instances, Instance, Text3D, Center} from "@react-three/drei";
 import {gsap} from "gsap";
 import {motion, useScroll, useTransform} from "framer-motion";
 import {isChrome, isEdge} from "react-device-detect";
@@ -33,6 +32,55 @@ export default function Home() {
 
     const cursorRef = useRef(null);
     const secondaryCursorRef = useRef(null);
+    const carouselImageDimensions = 80;
+
+    const slides = [
+        {
+            icon: <Image src={'/icons/arduino.svg'} alt={'arduino'} className={'invert'} width={carouselImageDimensions}
+                         height={carouselImageDimensions}/>
+        },
+        {
+            icon: <Image src={'/icons/js.svg'} alt={'arduino'} className={''} width={carouselImageDimensions}
+                         height={carouselImageDimensions}/>
+        },
+        {
+            icon: <Image src={'/icons/python.svg'} alt={'arduino'} className={'invert'} width={carouselImageDimensions}
+                         height={carouselImageDimensions}/>
+        },
+        {
+            icon: <Image src={'/icons/react.svg'} alt={'arduino'} className={'invert'} width={carouselImageDimensions}
+                         height={carouselImageDimensions}/>
+        },
+        {
+            icon: <Image src={'/icons/tailwind.svg'} alt={'arduino'} className={'invert'}
+                         width={carouselImageDimensions} height={carouselImageDimensions}/>
+        },
+        {
+            icon: <Image src={'/icons/framer.svg'} alt={'arduino'} className={'invert'} width={carouselImageDimensions}
+                         height={carouselImageDimensions}/>
+        },
+        {
+            icon: <Image src={'/icons/java.svg'} alt={'arduino'} className={'invert'} width={carouselImageDimensions}
+                         height={carouselImageDimensions}/>
+        },
+        {
+            icon: <Image src={'/icons/expo.svg'} alt={'arduino'} className={'invert'} width={carouselImageDimensions}
+                         height={carouselImageDimensions}/>
+        },
+        {
+            icon: <Image src={'/icons/firebase.svg'} alt={'arduino'} className={'invert'}
+                         width={carouselImageDimensions} height={carouselImageDimensions}/>
+        },
+        {
+            icon: <Image src={'/icons/nextjs.svg'} alt={'arduino'} className={'invert'} width={carouselImageDimensions}
+                         height={carouselImageDimensions}/>
+        },
+        {
+            icon: <Image src={'/icons/raspberrypi.svg'} alt={'arduino'} className={'invert'} width={carouselImageDimensions}
+                         height={carouselImageDimensions}/>
+        }
+    ];
+    const duplicatedSlides = [...slides, ...slides, ...slides];
 
     useEffect(() => {
         // client-side code
@@ -104,22 +152,31 @@ export default function Home() {
             <motion.div id={'section-2'}
                         className={'section-2 min-w-full mx-auto min-h-screen backdrop-blur-md flex flex-col'}
                         style={{scaleX: section1Scale, background: rgba(0, 0, 0, section1Alpha.get())}}>
-                <h1 className={'font-inter text-white text-6xl mx-auto mt-10'}>
+                <h1 className={'font-bold font-inter text-white text-8xl mx-auto mt-10'}>
                     About Me
                 </h1>
+                <div className={'relative w-full overflow-hidden mt-10'}>
+                    <motion.div className={'flex'} animate={{
+                        x: ['-100%', '0%'],
+                        transition: {
+                            ease: 'linear',
+                            duration: 20,
+                            repeat: Infinity
+                        }
+                    }}>
+                        {
+                            duplicatedSlides.map((slide, i) => (
+                                <div key={i} className="flex-shrink-0" style={{width: `${100 / slides.length}%`}}>
+                                    <div
+                                        className="flex flex-col items-center justify-center h-full text-6xl text-white">
+                                        {slide.icon}
+                                    </div>
+                                </div>
+                            ))
+                        }
+                    </motion.div>
+                </div>
                 <div className={'flex flex-row'}>
-                    <div id={'webgl-container'} className={'min-h-screen basis-1/2 border border-amber-500 sticky'}>
-                        <Canvas camera={{position: [0, 0, 4]}}>
-                            <ambientLight intensity={5}/>
-                            <directionalLight position={[0, 0, 5]} intensity={1}/>
-                            <Center>
-                                <Stars />
-                                <Float>
-                                    <ArduinoUno/>
-                                </Float>
-                            </Center>
-                        </Canvas>
-                    </div>
                     <div
                         className={'flex flex-col mt-20 min-h-screen justify-between basis-1/2 border border-green-500'}>
                         <p className={'font-inter text-white ml-auto text-5xl mt-20 mr-5'}>
@@ -170,18 +227,4 @@ function Square({xFactor, zFactor, xSpeed, zSpeed, xRotFactor}) {
     return (<group>
         <Instance ref={ref}/>
     </group>)
-}
-
-function ArduinoUno() {
-    const gltf = useLoader(GLTFLoader, 'models/uno-betaglb.glb');
-    const ref = useRef(null);
-
-    useFrame((state) => {
-        const t= state.clock.getElapsedTime();
-
-        ref.current.rotation.x = t / 100 * 3.14 + 0.005;
-        //ref.current.rotation.y = t / 2 * 3.14 + 0.5;
-    })
-
-    return <primitive object={gltf.scene} ref={ref}/>
 }
