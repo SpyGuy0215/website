@@ -105,20 +105,21 @@ export default function Home() {
             document.body.classList.add('scrollbar-none'); // removes scrollbar on Chrome and Edge
         } // Firefox class is already applied for no scrollbar
 
-        // initialize GSAP for horizontally scrolling section
-        gsap.to('#section-3', {
-            x: () => -(projectRef.current.offsetWidth - window.innerWidth),
+        gsap.to('#section-1', {
             scrollTrigger: {
-                trigger: '#section-3',
-                start: 'center center',
-                end: 'max',
-                invalidateOnRefresh: true
+                trigger: '#section-1',
+                start: 'top top',
+                end: 'bottom top',
+                scrub: 0.5,
+                pin: '.section-1',
+            },
+            onStart: () => {
+                console.log('start!')
+            },
+            onComplete: () => {
+                console.log('complete!')
             }
         })
-    })
-
-    useLenis((lenis) => {
-        setSquareOpacity(1 - window.scrollY / window.innerHeight); // 0 to 1
     })
 
     function updateMouse(e) {
@@ -136,12 +137,11 @@ export default function Home() {
 
     // noinspection JSSuspiciousNameCombination,JSValidateTypes
     return (
-        <div id={'main-div'} className={'flex flex-col'} onMouseMove={updateMouse}>
+        <div id={'main-div'} className={''} onMouseMove={updateMouse}>
             <div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-30'} ref={cursorRef}/>
             <div id={'secondaryCursor'} className={'border-2 border-blue-400 fixed h-8 w-8 rounded-full z-30'}
                  ref={secondaryCursorRef}/>
-            <div className={'section-1 flex grow fixed min-h-screen min-w-full justify-center -z-10'}>
-                <div id={'particle-container'} className={'grow w-full'}>
+            <div id={'section-1'} className={'section-1 flex min-h-screen min-w-full justify-center'}>
                     <Canvas camera={{position: [0, 0, 100]}}>
                         <ambientLight intensity={1.5}/>
                         <directionalLight position={[0, 0, 5]} intensity={1}/>
@@ -158,7 +158,6 @@ export default function Home() {
                             </Center>
                         </Instances>
                     </Canvas>
-                </div>
                 <div id='short-intro-text'
                      className={'absolute self-start mt-20 backdrop-blur-md px-20 py-5 rounded-2xl'}>
                     <h1 className={'font-inter font-bold text-blue-100 text-5xl'}> Hey, I'm</h1>
@@ -169,12 +168,9 @@ export default function Home() {
                            className={'invert'} priority={true}/>
                 </div>
             </div>
-            <div id={'section-1'} className={'section-1 min-h-screen'}>
-                {/*Only exists to space out sections since particle container et. al. is absolutely positioned*/}
-            </div>
-            <motion.div id={'section-2'}
+            <div id={'section-2'}
                         className={'section-2 min-w-full mx-auto min-h-screen backdrop-blur-md flex flex-col'}
-                        style={{scaleX: section1Scale, background: rgba(0, 0, 0, section1Alpha.get())}}>
+                        >
                 <h1 className={'font-bold font-inter text-white text-8xl mx-auto mt-10'}>
                     About Me
                 </h1>
@@ -226,23 +222,23 @@ export default function Home() {
                     </div>
                 </div>
 
-            </motion.div>
-            <div id={'section-3'} className={'h-screen bg-black flex'}>
-                <div className={'h-full border-green-500 border w-fit flex flex-row'} ref={projectRef}>
-                    <div id={'featured-project-1'} className={'w-screen'}>
-                        <Image src={'/images/personal-website-cover.png'} alt={'this website!'}
-                               width={window.innerWidth - 400} height={500} className={''}/>
-                    </div>
-                    <div id={'featured-project-2'} className={'w-screen'}>
-                        <Image src={'/images/personal-website-cover.png'} alt={'this website!'}
-                               width={window.innerWidth - 400} height={500} className={''}/>
-                    </div>
-                    <div id={'featured-project-3'} className={'w-screen'}>
-                        <Image src={'/images/personal-website-cover.png'} alt={'this website!'}
-                               width={window.innerWidth - 400} height={500} className={''}/>
-                    </div>
-                </div>
             </div>
+            {/*<div id={'section-3'} className={'h-screen bg-black flex'}>*/}
+            {/*    <div className={'h-full border-green-500 border w-fit flex flex-row'} ref={projectRef}>*/}
+            {/*        <div id={'featured-project-1'} className={'w-screen'}>*/}
+            {/*            <Image src={'/images/personal-website-cover.png'} alt={'this website!'}*/}
+            {/*                   width={window.innerWidth - 400} height={500} className={''}/>*/}
+            {/*        </div>*/}
+            {/*        <div id={'featured-project-2'} className={'w-screen'}>*/}
+            {/*            <Image src={'/images/personal-website-cover.png'} alt={'this website!'}*/}
+            {/*                   width={window.innerWidth - 400} height={500} className={''}/>*/}
+            {/*        </div>*/}
+            {/*        <div id={'featured-project-3'} className={'w-screen'}>*/}
+            {/*            <Image src={'/images/personal-website-cover.png'} alt={'this website!'}*/}
+            {/*                   width={window.innerWidth - 400} height={500} className={''}/>*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
         </div>)
 }
 
