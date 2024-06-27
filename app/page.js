@@ -8,10 +8,9 @@ import {
     Instance,
     Text3D,
     Center,
-    Image as R3Image,
-    Grid, TransformControls, Stars, Billboard, RoundedBox, MeshTransmissionMaterial, Html, PerspectiveCamera
 } from "@react-three/drei";
 import {gsap} from "gsap";
+import {ScrollTrigger} from "gsap/ScrollTrigger";
 import {motion, useScroll, useTransform} from "framer-motion";
 import {isChrome, isEdge} from "react-device-detect";
 import {random} from 'mathjs';
@@ -42,9 +41,6 @@ export default function Home() {
     const secondaryCursorRef = useRef(null);
     const carouselImageDimensions = 80;
     const projectRef = useRef();
-    const projectCameraRef = useRef();
-    const projectsMovementHandlerRef = useRef();
-    const imageProject1Ref = useRef();
     const router = useRouter();
 
     const slides = [
@@ -98,6 +94,8 @@ export default function Home() {
 
     useEffect(() => {
         // client-side code
+        gsap.registerPlugin(ScrollTrigger);
+
         // cursor GSAP init
         gsap.set('#primaryCursor', {xPercent: -50, yPercent: -50})
         gsap.set('#secondaryCursor', {xPercent: -50, yPercent: -50})
@@ -107,18 +105,20 @@ export default function Home() {
             document.body.classList.add('scrollbar-none'); // removes scrollbar on Chrome and Edge
         } // Firefox class is already applied for no scrollbar
 
-        // projects movement handler
-        projectsMovementHandlerRef.current.style.left = `${window.innerWidth / 2 - 90}px`;
+        // initialize GSAP for horizontally scrolling section
+        gsap.to('#section-3', {
+            x: () => -(projectRef.current.offsetWidth - window.innerWidth),
+            scrollTrigger: {
+                trigger: '#section-3',
+                start: 'center center',
+                end: 'max',
+                invalidateOnRefresh: true
+            }
+        })
     })
 
     useLenis((lenis) => {
         setSquareOpacity(1 - window.scrollY / window.innerHeight); // 0 to 1
-
-        if (lenis.progress > 0.99) {
-            projectsMovementHandlerRef.current.style.opacity = 1;
-        } else {
-            projectsMovementHandlerRef.current.style.opacity = 0;
-        }
     })
 
     function updateMouse(e) {
@@ -134,46 +134,12 @@ export default function Home() {
         })
     }
 
-    function handleRotateProjects(direction) {
-        if (direction === 'left') {
-            console.log('moving left')
-            projectCameraRef.current.rotation.y += (Math.PI / 2);
-        } else if (direction === 'right') {
-            console.log('moving right')
-            projectCameraRef.current.rotation.y -= (Math.PI / 2);
-        }
-    }
-
     // noinspection JSSuspiciousNameCombination,JSValidateTypes
     return (
         <div id={'main-div'} className={'flex flex-col'} onMouseMove={updateMouse}>
             <div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-30'} ref={cursorRef}/>
             <div id={'secondaryCursor'} className={'border-2 border-blue-400 fixed h-8 w-8 rounded-full z-30'}
                  ref={secondaryCursorRef}/>
-            <div id={'rotate-projects-buttons'} ref={projectsMovementHandlerRef}
-                 className={'h-fit w-fit fixed top-3/4 backdrop-blur-md bg-gray-200 rounded-xl flex flex-col justify-between z-40 opacity-0'}>
-                <div className={'flex flex-row min-w-full justify-between'}>
-                    <button type={'button'} onClick={() => {
-                        handleRotateProjects('left')
-                    }}>
-                        <Image id={'rot-left-button'} src={'/images/down-arrow.svg'} alt={'left arrow'} width={30}
-                               height={30}
-                               className={'rotate-90'}/>
-                    </button>
-                    <button type={'button'} onClick={() => {
-                        handleRotateProjects('right')
-                    }}>
-                        <Image id={'rot-right-button'} src={'/images/down-arrow.svg'} alt={'left arrow'} width={30}
-                               height={30}
-                               className={'-rotate-90'}/>
-                    </button>
-                </div>
-                <div className={''}>
-                    <button>
-                        <h3 className={'font-inter font-bold mx-6 my-4'}>Visit Case Study</h3>
-                    </button>
-                </div>
-            </div>
             <div className={'section-1 flex grow fixed min-h-screen min-w-full justify-center -z-10'}>
                 <div id={'particle-container'} className={'grow w-full'}>
                     <Canvas camera={{position: [0, 0, 100]}}>
@@ -261,25 +227,20 @@ export default function Home() {
                 </div>
 
             </motion.div>
-            <div id={'section-3'} className={'min-h-screen bg-black'}>
-                <div id={'project-canvas-container'} className={'h-screen'}>
-                    <Canvas className={''} ref={projectRef}>
-                        <PerspectiveCamera makeDefault position={[0, 0, 0]} ref={projectCameraRef}/>
-                        <ambientLight intensity={0.1}/>
-                        <directionalLight position={[0, 0, 5]}/>
-                        <Stars/>
-                        <R3Image url={'/images/personal-website-cover.png'} position={[0, 0.1, -1]} scale={[1, 0.5]}
-                                 ref={imageProject1Ref} onClick={() => {
-                            router.push('/blog/websitecasestudy')
-                        }}/>
-                        <R3Image url={'https://placehold.co/400x400'} position={[-1, 0.1, 0]}
-                                 rotation={[0, Math.PI / 2, 0]} scale={[1, 0.5]}/>
-                        <R3Image url={'https://placehold.co/300x300'} position={[0, 0.1, 1]} rotation={[0, Math.PI, 0]}
-                                 scale={[1, 0.5]}/>
-                        <R3Image url={'https://placehold.co/200x200'} position={[1, 0.1, 0]}
-                                 rotation={[0, -Math.PI / 2, 0]} scale={[1, 0.5]}/>
-                        <Grid position={[0, -3, -2]} infiniteGrid/>
-                    </Canvas>
+            <div id={'section-3'} className={'h-screen bg-black flex'}>
+                <div className={'h-full border-green-500 border w-fit flex flex-row'} ref={projectRef}>
+                    <div id={'featured-project-1'} className={'w-screen'}>
+                        <Image src={'/images/personal-website-cover.png'} alt={'this website!'}
+                               width={window.innerWidth - 400} height={500} className={''}/>
+                    </div>
+                    <div id={'featured-project-2'} className={'w-screen'}>
+                        <Image src={'/images/personal-website-cover.png'} alt={'this website!'}
+                               width={window.innerWidth - 400} height={500} className={''}/>
+                    </div>
+                    <div id={'featured-project-3'} className={'w-screen'}>
+                        <Image src={'/images/personal-website-cover.png'} alt={'this website!'}
+                               width={window.innerWidth - 400} height={500} className={''}/>
+                    </div>
                 </div>
             </div>
         </div>)
