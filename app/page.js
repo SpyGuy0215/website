@@ -2,8 +2,19 @@
 
 import {useState, useRef, useEffect} from 'react';
 import {Canvas, useFrame} from "@react-three/fiber";
-import Image from "next/image";
-import {Instances, Instance, Text3D, Center, Bounds} from "@react-three/drei";
+import Image from "next/image"
+import {
+    Instances,
+    Instance,
+    Text3D,
+    Text as R3Text,
+    Center,
+    Image as R3Image,
+    Environment,
+    Backdrop,
+    Stage,
+    Grid, TransformControls, Stars, Billboard, RoundedBox, MeshTransmissionMaterial, Html, PerspectiveCamera
+} from "@react-three/drei";
 import {gsap} from "gsap";
 import {motion, useScroll, useTransform} from "framer-motion";
 import {isChrome, isEdge} from "react-device-detect";
@@ -12,6 +23,7 @@ import {useLenis} from "@studio-freight/react-lenis"
 import {rgba} from "color2k";
 
 import './page.css';
+import * as Three from "three/src/math/MathUtils";
 
 const particleSpeed = 0.5;
 
@@ -29,11 +41,12 @@ export default function Home() {
     const {scrollYProgress} = useScroll();
     const section1Scale = useTransform(scrollYProgress, [0, 0.2], [5 / 6, 1])
     const section1Alpha = useTransform(scrollYProgress, [0, 0.7], [0.3, 1])
-    const section2Color = useTransform(scrollYProgress, [0.5, 1], [170, 255])
 
     const cursorRef = useRef(null);
     const secondaryCursorRef = useRef(null);
     const carouselImageDimensions = 80;
+    const projectRef = useRef();
+    const projectCameraRef = useRef();
 
     const slides = [
         {
@@ -98,6 +111,7 @@ export default function Home() {
 
     useLenis((lenis) => {
         setSquareOpacity(1 - window.scrollY / window.innerHeight); // 0 to 1
+
     })
 
     function updateMouse(e) {
@@ -113,20 +127,46 @@ export default function Home() {
         })
     }
 
+    function handleRotateProjects(direction){
+        if(direction === 'left'){
+            console.log('moving left')
+            projectCameraRef.current.rotation.y += (Math.PI / 2);
+        }
+        else if(direction === 'right'){
+            console.log('moving right')
+            projectCameraRef.current.rotation.y -= (Math.PI / 2);
+        }
+    }
+
     // noinspection JSSuspiciousNameCombination,JSValidateTypes
     return (
         <div id={'main-div'} className={'flex flex-col'} onMouseMove={updateMouse}>
-            <div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-20'} ref={cursorRef}/>
-            <div id={'secondaryCursor'} className={'border-2 border-blue-400 fixed h-8 w-8 rounded-full z-20'}
+            <div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-30'} ref={cursorRef}/>
+            <div id={'secondaryCursor'} className={'border-2 border-blue-400 fixed h-8 w-8 rounded-full z-30'}
                  ref={secondaryCursorRef}/>
-            <div className={'section-1 flex grow fixed min-h-screen min-w-full justify-center'}>
+            <div id={'rotate-projects-buttons'}
+                className={'h-10 w-20 border border-amber-500 fixed right-1/2 top-3/4 backdrop-blur-md bg-gray-200 rounded-xl flex flex-row justify-between z-40'}>
+                <button type={'button'} onClick={() => {
+                    handleRotateProjects('left')
+                }} className={'border border-green-500'}>
+                    <Image id={'rot-left-button'} src={'/images/down-arrow.svg'} alt={'left arrow'} width={30} height={30}
+                           className={'invert rotate-90'}/>
+                </button>
+                <button type={'button'} onClick={() => {
+                    handleRotateProjects('right')
+                }}>
+                    <Image id={'rot-right-button'} src={'/images/down-arrow.svg'} alt={'left arrow'} width={30} height={30}
+                           className={'invert -rotate-90'}/>
+                </button>
+            </div>
+            <div className={'section-1 flex grow fixed min-h-screen min-w-full justify-center -z-10'}>
                 <div id={'particle-container'} className={'grow w-full'}>
                     <Canvas camera={{position: [0, 0, 100]}}>
                         <ambientLight intensity={1.5}/>
                         <directionalLight position={[0, 0, 5]} intensity={1}/>
                         <Instances range={15}>
                             <boxGeometry args={[15, 15, 0.1]}/>
-                            <meshStandardMaterial color={'0xffffff'} opacity={squareOpacity} transparent={true}/>
+                            <meshStandardMaterial color={'#ffffff'} opacity={squareOpacity} transparent={true}/>
                             {particles.map((data, i) => (<Square key={i} {...data}/>))}
                             <Center>
                                 <Text3D font={'/fonts/inter/Inter_Bold.json'} size={30} height={3}
@@ -178,26 +218,26 @@ export default function Home() {
                         }
                     </motion.div>
                 </div>
-                <div className={'border border-red-600 w-full mt-10'}>
-                    <div className={'flex flex-row border border-amber-500 justify-between'}>
+                <div className={'mt-10 mx-5'}>
+                    <div className={'flex flex-row justify-between mb-20'}>
                         <h1 className={'text-white font-inter text-5xl w-1/2 font-bold'}>Fullstack Software
                             Developer</h1>
-                        <p className={'text-white font-inter w-1/2 text-3xl'} align={'right'}>
+                        <p className={'text-white font-inter w-1/2 text-3xl leading-10'} align={'right'}>
                             I am well-versed in a number of front-end technologies like NextJS and Tailwind, and can
                             connect them to powerful backend solutions built with tools like Python, Java, and Firebase
                         </p>
                     </div>
-                    <div className={'flex flex-row border border-amber-500 justify-between'}>
+                    <div className={'flex flex-row justify-between mb-20'}>
                         <h1 className={'text-white font-inter text-5xl w-1/2 font-bold'}>Hardware Enthusiast</h1>
-                        <p className={'text-white font-inter w-1/2 text-3xl'} align={'right'}>
+                        <p className={'text-white font-inter w-1/2 text-3xl leading-10'} align={'right'}>
                             I am knowledgable on hardware platforms like Arduino and Raspberry Pi, and can create custom
                             solutions linking to the cloud, IoT, Bluetooth, and more. I can integrate these systems into
                             existing or new products that operate seamlessly, supercharging a product's capabilities.
                         </p>
                     </div>
-                    <div className={'flex flex-row border border-amber-500 justify-between'}>
+                    <div className={'flex flex-row justify-between mb-20'}>
                         <h1 className={'text-white font-inter text-5xl w-1/2 font-bold'}>Junior in High School</h1>
-                        <p className={'text-white font-inter w-1/2 text-3xl'} align={'right'}>
+                        <p className={'text-white font-inter w-1/2 text-3xl leading-10'} align={'right'}>
                             Motivated learner, taking AP Computer Science A, AP Calculus AB, and AP Biology. Currently
                             have a 4.0 GPA. Plan to further my education in the field of computer science and
                             engineering in college.
@@ -206,6 +246,20 @@ export default function Home() {
                 </div>
 
             </motion.div>
+            <div id={'section-3'} className={'min-h-screen bg-black border border-green-500 static  '}>
+                <div id={'project-canvas-container'} className={'h-screen border border-red-600'}>
+                    <Canvas className={''} ref={projectRef}>
+                        <PerspectiveCamera makeDefault position={[0, 0, 0]} ref={projectCameraRef}/>
+                        <ambientLight intensity={0.1}/>
+                        <directionalLight position={[0, 0, 5]}/>
+                        <R3Image url={'https://placehold.co/1920x1080'} position={[0, 0.2, -1]} scale={0.7}/>
+                        <R3Image url={'https://placehold.co/1920x1080'} position={[-1, 0.2, 0]} rotation={[0, Math.PI/2, 0]} scale={0.7}/>
+                        <R3Image url={'https://placehold.co/1920x1080'} position={[1, 0.2, 0]} rotation={[0, Math.PI/2, 0]} scale={0.7}/>
+                        <R3Image url={'https://placehold.co/1920x1080'} position={[-1, 0.2, 0]} rotation={[0, Math.PI/2, 0]} scale={0.7}/>
+                        <Grid position={[0, -3, -2]} infiniteGrid/>
+                    </Canvas>
+                </div>
+            </div>
         </div>)
 }
 
