@@ -3,7 +3,7 @@
 import {useState, useRef, useEffect} from 'react';
 import {Canvas, useFrame} from "@react-three/fiber";
 import Image from "next/image";
-import {Instances, Instance, Text3D, Center} from "@react-three/drei";
+import {Instances, Instance, Text3D, Center, Bounds} from "@react-three/drei";
 import {gsap} from "gsap";
 import {motion, useScroll, useTransform} from "framer-motion";
 import {isChrome, isEdge} from "react-device-detect";
@@ -28,7 +28,8 @@ export default function Home() {
     let [squareOpacity, setSquareOpacity] = useState(1);
     const {scrollYProgress} = useScroll();
     const section1Scale = useTransform(scrollYProgress, [0, 0.2], [5 / 6, 1])
-    const section1Alpha = useTransform(scrollYProgress, [0, 0.4], [0.3, 1])
+    const section1Alpha = useTransform(scrollYProgress, [0, 0.7], [0.3, 1])
+    const section2Color = useTransform(scrollYProgress, [0.5, 1], [170, 255])
 
     const cursorRef = useRef(null);
     const secondaryCursorRef = useRef(null);
@@ -76,7 +77,8 @@ export default function Home() {
                          height={carouselImageDimensions}/>
         },
         {
-            icon: <Image src={'/icons/raspberrypi.svg'} alt={'arduino'} className={'invert'} width={carouselImageDimensions}
+            icon: <Image src={'/icons/raspberrypi.svg'} alt={'arduino'} className={'invert'}
+                         width={carouselImageDimensions}
                          height={carouselImageDimensions}/>
         }
     ];
@@ -94,7 +96,7 @@ export default function Home() {
         } // Firefox class is already applied for no scrollbar
     })
 
-    useLenis(() => {
+    useLenis((lenis) => {
         setSquareOpacity(1 - window.scrollY / window.innerHeight); // 0 to 1
     })
 
@@ -111,7 +113,7 @@ export default function Home() {
         })
     }
 
-    // noinspection JSSuspiciousNameCombination
+    // noinspection JSSuspiciousNameCombination,JSValidateTypes
     return (
         <div id={'main-div'} className={'flex flex-col'} onMouseMove={updateMouse}>
             <div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-20'} ref={cursorRef}/>
@@ -146,7 +148,7 @@ export default function Home() {
                            className={'invert'} priority={true}/>
                 </div>
             </div>
-            <div id={'section-1'} className={'section-1 min-h-screen '}>
+            <div id={'section-1'} className={'section-1 min-h-screen'}>
                 {/*Only exists to space out sections since particle container et. al. is absolutely positioned*/}
             </div>
             <motion.div id={'section-2'}
@@ -176,17 +178,29 @@ export default function Home() {
                         }
                     </motion.div>
                 </div>
-                <div className={'flex flex-row'}>
-                    <div
-                        className={'flex flex-col mt-20 min-h-screen justify-between basis-1/2 border border-green-500'}>
-                        <p className={'font-inter text-white ml-auto text-5xl mt-20 mr-5'}>
-                            Junior in High School
+                <div className={'border border-red-600 w-full mt-10'}>
+                    <div className={'flex flex-row border border-amber-500 justify-between'}>
+                        <h1 className={'text-white font-inter text-5xl w-1/2 font-bold'}>Fullstack Software
+                            Developer</h1>
+                        <p className={'text-white font-inter w-1/2 text-3xl'} align={'right'}>
+                            I am well-versed in a number of front-end technologies like NextJS and Tailwind, and can
+                            connect them to powerful backend solutions built with tools like Python, Java, and Firebase
                         </p>
-                        <p className={'font-inter text-white ml-auto text-5xl mr-5'}>
-                            Fullstack Software Developer
+                    </div>
+                    <div className={'flex flex-row border border-amber-500 justify-between'}>
+                        <h1 className={'text-white font-inter text-5xl w-1/2 font-bold'}>Hardware Enthusiast</h1>
+                        <p className={'text-white font-inter w-1/2 text-3xl'} align={'right'}>
+                            I am knowledgable on hardware platforms like Arduino and Raspberry Pi, and can create custom
+                            solutions linking to the cloud, IoT, Bluetooth, and more. I can integrate these systems into
+                            existing or new products that operate seamlessly, supercharging a product's capabilities.
                         </p>
-                        <p className={'font-inter text-white ml-auto text-5xl mb-20 mr-5'}>
-                            Hardware Enthusiast
+                    </div>
+                    <div className={'flex flex-row border border-amber-500 justify-between'}>
+                        <h1 className={'text-white font-inter text-5xl w-1/2 font-bold'}>Junior in High School</h1>
+                        <p className={'text-white font-inter w-1/2 text-3xl'} align={'right'}>
+                            Motivated learner, taking AP Computer Science A, AP Calculus AB, and AP Biology. Currently
+                            have a 4.0 GPA. Plan to further my education in the field of computer science and
+                            engineering in college.
                         </p>
                     </div>
                 </div>
