@@ -7,7 +7,7 @@ import {
     Instances,
     Instance,
     Text3D,
-    Center,
+    Center, Scroll,
 } from "@react-three/drei";
 import {gsap} from "gsap";
 import {useGSAP} from "@gsap/react";
@@ -20,6 +20,7 @@ import {rgba} from "color2k";
 
 import './page.css';
 import {useRouter} from "next/navigation";
+import SmoothScrolling from "@/app/components/SmoothScrolling";
 
 const particleSpeed = 0.5;
 
@@ -33,10 +34,7 @@ const particles = Array.from({length: 24}, () => ({
 
 export default function Home() {
 
-    let [squareOpacity, setSquareOpacity] = useState(1);
-    const {scrollYProgress} = useScroll();
-    const section1Scale = useTransform(scrollYProgress, [0, 0.2], [5 / 6, 1])
-    const section1Alpha = useTransform(scrollYProgress, [0, 0.7], [0.3, 1])
+    let primaryCanvasRef = useRef(null);
 
     const cursorRef = useRef(null);
     const secondaryCursorRef = useRef(null);
@@ -94,18 +92,30 @@ export default function Home() {
     const duplicatedSlides = [...slides, ...slides, ...slides];
 
     useGSAP(() => {
+        if(window === undefined) return;
         gsap.registerPlugin(ScrollTrigger);
 
         // cursor GSAP init
         gsap.set('#primaryCursor', {xPercent: -50, yPercent: -50})
         gsap.set('#secondaryCursor', {xPercent: -50, yPercent: -50})
 
+        // fades out section 1 while section 2 is moving up
+        gsap.to('#section-1', {
+            opacity: 0.15,
+            scrollTrigger: {
+                trigger: '#section-1',
+                start: 'top top',
+                end: 'bottom top',
+                scrub: true,
+                markers: false // true in dev
+            }
+        })
+
+        // moves section 2 up while pinning section 1
         gsap.fromTo('#section-2', {
             y: () => 0,
-            opacity: 0
         }, {
             y: () => -window.innerHeight,
-            opacity: 1,
             scrollTrigger: {
                 trigger: '#section-2',
                 start: 'top bottom',
@@ -115,14 +125,17 @@ export default function Home() {
             }
         })
 
-        gsap.to('#section-1 ', {
-            opacity: 0.15,
+        gsap.fromTo('#section-3', {
+            x: 0
+        }, {
+            x: () => -window.innerWidth*3,
             scrollTrigger: {
-                trigger: '#section-2',
-                start: 'top bottom',
-                end: 'bottom bottom',
+                trigger: '#section-3',
+                start: 'top top',
+                end: '+=200%',
+                markers: true,
                 scrub: true,
-                markers: true // true in dev
+                pin: true
             }
         })
 
@@ -130,12 +143,14 @@ export default function Home() {
 
     useEffect(() => {
         // client-side code
-
+        if(document === undefined) return;
         // edit scrollbar styling
         if (isChrome || isEdge) {
             document.body.classList.add('scrollbar-none'); // removes scrollbar on Chrome and Edge
         } // Firefox class is already applied for no scrollbar
 
+
+        ScrollTrigger.refresh();
     })
 
     function updateMouse(e) {
@@ -157,13 +172,13 @@ export default function Home() {
             <div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-30'} ref={cursorRef}/>
             <div id={'secondaryCursor'} className={'border-2 border-blue-400 fixed h-8 w-8 rounded-full z-30'}
                  ref={secondaryCursorRef}/>
-            <div id={'section-1'} className={'section-1 flex min-h-dvh w-screen justify-center border border-amber-500'}>
-                    <Canvas camera={{position: [0, 0, 100]}}>
+            <div id={'section-1'} className={'section-1 flex min-h-dvh w-screen justify-center top-0'}>
+                    <Canvas camera={{position: [0, 0, 100]}} ref={primaryCanvasRef}>
                         <ambientLight intensity={1.5}/>
                         <directionalLight position={[0, 0, 5]} intensity={1}/>
                         <Instances range={15}>
                             <boxGeometry args={[15, 15, 0.1]}/>
-                            <meshStandardMaterial color={'#ffffff'} opacity={squareOpacity} transparent={true}/>
+                            <meshStandardMaterial color={'#ffffff'}/>
                             {particles.map((data, i) => (<Square key={i} {...data}/>))}
                             <Center>
                                 <Text3D font={'/fonts/inter/Inter_Bold.json'} size={30} height={3}
@@ -184,31 +199,31 @@ export default function Home() {
                            className={'invert'} priority={true}/>
                 </div>
             </div>
-            <div id={'section-2'} className={'section-2 min-w-full max-h-screen mx-auto backdrop-blur-md flex flex-col h-fit absolute z-10'}>
+            <div id={'section-2'} className={'section-2 min-w-full max-h-screen mx-auto backdrop-blur-md flex flex-col absolute z-10'}>
                 <h1 className={'font-bold font-inter text-white text-8xl mx-auto mt-10'}>
                     About Me
                 </h1>
-                <div className={'relative w-full overflow-hidden mt-10'}>
-                    <motion.div className={'flex'} animate={{
-                        x: ['-100%', '0%'],
-                        transition: {
-                            ease: 'linear',
-                            duration: 20,
-                            repeat: Infinity
-                        }
-                    }}>
-                        {
-                            duplicatedSlides.map((slide, i) => (
-                                <div key={i} className="flex-shrink-0" style={{width: `${100 / slides.length}%`}}>
-                                    <div
-                                        className="flex flex-col items-center justify-center h-full text-6xl text-white">
-                                        {slide.icon}
-                                    </div>
-                                </div>
-                            ))
-                        }
-                    </motion.div>
-                </div>
+                {/*<div id={'image-scroller'} className={'relative w-full overflow-hidden mt-10'}>*/}
+                {/*    <motion.div className={'flex'} animate={{*/}
+                {/*        x: ['-100%', '0%'],*/}
+                {/*        transition: {*/}
+                {/*            ease: 'linear',*/}
+                {/*            duration: 20,*/}
+                {/*            repeat: Infinity*/}
+                {/*        }*/}
+                {/*    }}>*/}
+                {/*        {*/}
+                {/*            duplicatedSlides.map((slide, i) => (*/}
+                {/*                <div key={i} className="flex-shrink-0" style={{width: `${100 / slides.length}%`}}>*/}
+                {/*                    <div*/}
+                {/*                        className="flex flex-col items-center justify-center h-full text-6xl text-white">*/}
+                {/*                        {slide.icon}*/}
+                {/*                    </div>*/}
+                {/*                </div>*/}
+                {/*            ))*/}
+                {/*        }*/}
+                {/*    </motion.div>*/}
+                {/*</div >*/}
                 <div className={'mt-10 mx-5'}>
                     <div className={'flex flex-row justify-between mb-20'}>
                         <h1 className={'text-white font-inter text-5xl w-1/2 font-bold'}>Fullstack Software
@@ -238,7 +253,7 @@ export default function Home() {
 
             </div>
             <div id={'section-3'} className={'h-screen bg-black flex'}>
-                <div className={'h-full border-green-500 border w-fit flex flex-row'} ref={projectRef}>
+                <div className={'h-full border w-fit flex flex-row'} ref={projectRef}>
                     <div id={'featured-project-1'} className={'w-screen'}>
                         <Image src={'/images/personal-website-cover.png'} alt={'this website!'}
                                width={window.innerWidth - 400} height={500} className={''}/>
