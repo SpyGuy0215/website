@@ -10,6 +10,7 @@ import {
     Center,
 } from "@react-three/drei";
 import {gsap} from "gsap";
+import {useGSAP} from "@gsap/react";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
 import {motion, useScroll, useTransform} from "framer-motion";
 import {isChrome, isEdge} from "react-device-detect";
@@ -92,34 +93,49 @@ export default function Home() {
     ];
     const duplicatedSlides = [...slides, ...slides, ...slides];
 
-    useEffect(() => {
-        // client-side code
+    useGSAP(() => {
         gsap.registerPlugin(ScrollTrigger);
 
         // cursor GSAP init
         gsap.set('#primaryCursor', {xPercent: -50, yPercent: -50})
         gsap.set('#secondaryCursor', {xPercent: -50, yPercent: -50})
 
+        gsap.fromTo('#section-2', {
+            y: () => 0,
+            opacity: 0
+        }, {
+            y: () => -window.innerHeight,
+            opacity: 1,
+            scrollTrigger: {
+                trigger: '#section-2',
+                start: 'top bottom',
+                end: 'bottom bottom',
+                pin: '#section-1',
+                markers: true // true in dev
+            }
+        })
+
+        gsap.to('#section-1 ', {
+            opacity: 0.15,
+            scrollTrigger: {
+                trigger: '#section-2',
+                start: 'top bottom',
+                end: 'bottom bottom',
+                scrub: true,
+                markers: true // true in dev
+            }
+        })
+
+    })
+
+    useEffect(() => {
+        // client-side code
+
         // edit scrollbar styling
         if (isChrome || isEdge) {
             document.body.classList.add('scrollbar-none'); // removes scrollbar on Chrome and Edge
         } // Firefox class is already applied for no scrollbar
 
-        gsap.to('#section-1', {
-            scrollTrigger: {
-                trigger: '#section-1',
-                start: 'top top',
-                end: 'bottom top',
-                scrub: 0.5,
-                pin: '.section-1',
-            },
-            onStart: () => {
-                console.log('start!')
-            },
-            onComplete: () => {
-                console.log('complete!')
-            }
-        })
     })
 
     function updateMouse(e) {
@@ -141,7 +157,7 @@ export default function Home() {
             <div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-30'} ref={cursorRef}/>
             <div id={'secondaryCursor'} className={'border-2 border-blue-400 fixed h-8 w-8 rounded-full z-30'}
                  ref={secondaryCursorRef}/>
-            <div id={'section-1'} className={'section-1 flex min-h-screen min-w-full justify-center'}>
+            <div id={'section-1'} className={'section-1 flex min-h-dvh w-screen justify-center border border-amber-500'}>
                     <Canvas camera={{position: [0, 0, 100]}}>
                         <ambientLight intensity={1.5}/>
                         <directionalLight position={[0, 0, 5]} intensity={1}/>
@@ -168,9 +184,7 @@ export default function Home() {
                            className={'invert'} priority={true}/>
                 </div>
             </div>
-            <div id={'section-2'}
-                        className={'section-2 min-w-full mx-auto min-h-screen backdrop-blur-md flex flex-col'}
-                        >
+            <div id={'section-2'} className={'section-2 min-w-full max-h-screen mx-auto backdrop-blur-md flex flex-col h-fit absolute z-10'}>
                 <h1 className={'font-bold font-inter text-white text-8xl mx-auto mt-10'}>
                     About Me
                 </h1>
@@ -223,22 +237,22 @@ export default function Home() {
                 </div>
 
             </div>
-            {/*<div id={'section-3'} className={'h-screen bg-black flex'}>*/}
-            {/*    <div className={'h-full border-green-500 border w-fit flex flex-row'} ref={projectRef}>*/}
-            {/*        <div id={'featured-project-1'} className={'w-screen'}>*/}
-            {/*            <Image src={'/images/personal-website-cover.png'} alt={'this website!'}*/}
-            {/*                   width={window.innerWidth - 400} height={500} className={''}/>*/}
-            {/*        </div>*/}
-            {/*        <div id={'featured-project-2'} className={'w-screen'}>*/}
-            {/*            <Image src={'/images/personal-website-cover.png'} alt={'this website!'}*/}
-            {/*                   width={window.innerWidth - 400} height={500} className={''}/>*/}
-            {/*        </div>*/}
-            {/*        <div id={'featured-project-3'} className={'w-screen'}>*/}
-            {/*            <Image src={'/images/personal-website-cover.png'} alt={'this website!'}*/}
-            {/*                   width={window.innerWidth - 400} height={500} className={''}/>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
+            <div id={'section-3'} className={'h-screen bg-black flex'}>
+                <div className={'h-full border-green-500 border w-fit flex flex-row'} ref={projectRef}>
+                    <div id={'featured-project-1'} className={'w-screen'}>
+                        <Image src={'/images/personal-website-cover.png'} alt={'this website!'}
+                               width={window.innerWidth - 400} height={500} className={''}/>
+                    </div>
+                    <div id={'featured-project-2'} className={'w-screen'}>
+                        <Image src={'/images/personal-website-cover.png'} alt={'this website!'}
+                               width={window.innerWidth - 400} height={500} className={''}/>
+                    </div>
+                    <div id={'featured-project-3'} className={'w-screen'}>
+                        <Image src={'/images/personal-website-cover.png'} alt={'this website!'}
+                               width={window.innerWidth - 400} height={500} className={''}/>
+                    </div>
+                </div>
+            </div>
         </div>)
 }
 
