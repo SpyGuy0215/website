@@ -91,6 +91,7 @@ export default function Home() {
     ];
     const duplicatedSlides = [...slides, ...slides, ...slides];
 
+
     useGSAP(() => {
         if(window === undefined) return;
         gsap.registerPlugin(ScrollTrigger);
@@ -166,6 +167,7 @@ export default function Home() {
         })
     }
 
+    if(window === undefined) return;
     // noinspection JSSuspiciousNameCombination,JSValidateTypes
     return (
         <div id={'main-div'} className={''} onMouseMove={updateMouse}>
