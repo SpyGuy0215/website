@@ -167,7 +167,7 @@ export default function Home() {
         })
     }
 
-    if(window === undefined) return;
+    if(typeof window === 'undefined') return; // makes sure Vercel SSR does not failt
     // noinspection JSSuspiciousNameCombination,JSValidateTypes
     return (
         <div id={'main-div'} className={''} onMouseMove={updateMouse}>
