@@ -9,8 +9,9 @@ import {
     Text3D,
     Center, PerformanceMonitor,
 } from "@react-three/drei";
+import gsap from "gsap";
 import {EffectComposer, Glitch} from "@react-three/postprocessing";
-import {motion} from "framer-motion";
+import {motion, useSpring} from "framer-motion";
 import {isChrome, isEdge} from "react-device-detect";
 import {useInView} from "react-intersection-observer";
 import {random} from 'mathjs';
@@ -32,13 +33,12 @@ export default function Home() {
 
     const [primaryCanvasRef, canvasInView] = useInView()
     const [isClient, setIsClient] = useState(false);
-    const [dpr, setDpr] = useState([1,2]);
-    const [mousePos, updateMousePos] = useState({x: 0, y: 0});
-
-    const cursorRef = useRef(null);
-    const secondaryCursorRef = useRef(null);
+    const [dpr, setDpr] = useState([1, 2]);
     const carouselImageDimensions = 80;
-    const projectRef = useRef();
+    const [githubButtonStates, setGithubButtonStates] = useState({
+        isHovered: false,
+        isClicked: false
+    })
     const router = useRouter();
 
     const slides = [
@@ -99,56 +99,61 @@ export default function Home() {
             document.body.classList.add('scrollbar-none'); // removes scrollbar on Chrome and Edge
         } // Firefox class is already applied for no scrollbar
 
+        window.addEventListener('mousemove', updateMouse);
+
     }, [])
 
     function updateMouse(e) {
-        updateMousePos({x: e.clientX, y: e.clientY});
+        gsap.set('#primaryCursor', {
+            x: e.clientX, y: e.clientY,
+            xPercent: -50, yPercent: -50
+        })
+        gsap.to('#secondaryCursor', {
+            x: e.clientX,
+            y: e.clientY,
+            duration: 0.5,
+            ease: 'power2.out',
+            xPercent: -50,
+            yPercent: -50
+        });
     }
 
     // noinspection JSSuspiciousNameCombination,JSValidateTypes
     if (isClient) {
         return (
-            <div id={'main-div'} className={'overflow-hidden h-screen'} onMouseMove={updateMouse}>
-                <motion.div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-30'} ref={cursorRef}
-                style={{
-                    x: mousePos.x,
-                    y: mousePos.y
-                }}/>
-                <motion.div id={'secondaryCursor'} className={'border-2 border-blue-400 fixed h-8 w-8 rounded-full z-30'}
-                     ref={secondaryCursorRef} style={{
-                    x: mousePos.x,
-                    y: mousePos.y,
-                }} transition={{
-                    type: 'spring',
-                    stiffness: 260,
-                    damping: 20
-                }}/>
+            <div id={'main-div'} className={'overflow-hidden flex flex-col h-fit border border-red-600'}
+                 >
+                <div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-30'}/>
+                <div id={'secondaryCursor'}
+                     className={'border-2 border-blue-400 fixed h-8 w-8 rounded-full z-20 bg-blend-difference'}/>
                 <div id={'section-1'}
-                     className={'section-1 flex h-dvh w-screen justify-center'}>
-                    <Canvas camera={{position: [0, 0, 100]}} ref={primaryCanvasRef}
-                            frameloop={canvasInView ? 'always' : 'never'} dpr={dpr}>
-                        <PerformanceMonitor onDecline={() => {
-                            setDpr([0.5,1])
-                            console.log('decreasing to ' + dpr)
-                        }} onIncline={() => {
-                            setDpr([1,2]);
-                            console.log('increasing to ' + dpr)
-                        }}/>
-                        <ambientLight intensity={1.5}/>
-                        <directionalLight position={[0, 0, 5]} intensity={1}/>
-                        <Instances range={15}>
-                            <boxGeometry args={[15, 15, 0.1]}/>
-                            <meshStandardMaterial color={'#ffffff'}/>
-                            {particles.map((data, i) => (<Square key={i} {...data}/>))}
-                            <Center>
-                                <Text3D font={'/fonts/inter/Inter_Bold.json'} size={30} height={3}
-                                        bevelEnabled bevelSize={0.6} bevelSegments={2} letterSpacing={1.1}>
-                                    Shashank
-                                    <meshNormalMaterial/> {/* possibly replace this with a custom material */}
-                                </Text3D>
-                            </Center>
-                        </Instances>
-                    </Canvas>
+                     className={'section-1 flex min-h-screen w-screen'}>
+                    <div className={'h-screen w-screen'}>
+                        <Canvas camera={{position: [0, 0, 100]}} ref={primaryCanvasRef}
+                                frameloop={canvasInView ? 'always' : 'never'} dpr={dpr}>
+                            <PerformanceMonitor onDecline={() => {
+                                setDpr([0.5, 1])
+                                console.log('decreasing to ' + dpr)
+                            }} onIncline={() => {
+                                setDpr([1, 2]);
+                                console.log('increasing to ' + dpr)
+                            }}/>
+                            <ambientLight intensity={1.5}/>
+                            <directionalLight position={[0, 0, 5]} intensity={1}/>
+                            <Instances range={15}>
+                                <boxGeometry args={[15, 15, 0.1]}/>
+                                <meshStandardMaterial color={'#ffffff'}/>
+                                {particles.map((data, i) => (<Square key={i} {...data}/>))}
+                                <Center>
+                                    <Text3D font={'/fonts/inter/Inter_Bold.json'} size={30} height={3}
+                                            bevelEnabled bevelSize={0.6} bevelSegments={2} letterSpacing={1.1}>
+                                        Shashank
+                                        <meshNormalMaterial/> {/* possibly replace this with a custom material */}
+                                    </Text3D>
+                                </Center>
+                            </Instances>
+                        </Canvas>
+                    </div>
                     <div id='short-intro-text'
                          className={'absolute self-start mt-20 backdrop-blur-md px-20 py-5 rounded-2xl'}>
                         <h1 className={'font-inter font-bold text-blue-100 text-5xl'}> Hey, I'm</h1>
@@ -158,9 +163,19 @@ export default function Home() {
                         <Image src={'/images/mouse.svg'} alt={'down arrow'} width={45} height={45} unoptimized
                                className={'invert'} priority={true}/>
                     </div>
+                    <div id={'socials'} className={'absolute self-end mb-20 backdrop-blur-md rounded-2xl right-20 flex flex-row'}>
+                        <a className={'mx-1 my-1'} href={'https://www.github.com/SpyGuy0215'}>
+                            <Image src={'/icons/github.svg'} alt={'github'} width={60} height={60} className={'invert'}
+                                   unoptimized/>
+                        </a>
+                        <a className={'mx-1 my-1'}>
+                            <Image src={'/icons/linkedin.svg'} alt={'linkedin'} width={60} height={60} className={'invert'}
+                                   unoptimized/>
+                        </a>
+                    </div>
                 </div>
                 <div id={'section-2'}
-                     className={'section-2 min-w-full mx-auto backdrop-blur-md flex flex-col absolute z-10'}>
+                     className={'section-2 min-w-full flex flex-col'}>
                     <h1 className={'font-bold font-inter text-white text-8xl mx-auto mt-10'}>
                         About Me
                     </h1>
@@ -218,22 +233,9 @@ export default function Home() {
                     </div>
 
                 </div>
-                {/*<div id={'section-3'} className={'h-screen bg-black flex'}>*/}
-                {/*    <div className={'h-full border w-fit flex flex-row'} ref={projectRef}>*/}
-                {/*        <div id={'featured-project-1'} className={'w-screen'}>*/}
-                {/*            <Image src={'/images/personal-website-cover.png'} alt={'this website!'}*/}
-                {/*                   width={window.innerWidth - 400} height={500} className={''}/>*/}
-                {/*        </div>*/}
-                {/*        <div id={'featured-project-2'} className={'w-screen'}>*/}
-                {/*            <Image src={'/images/personal-website-cover.png'} alt={'this website!'}*/}
-                {/*                   width={window.innerWidth - 400} height={500} className={''}/>*/}
-                {/*        </div>*/}
-                {/*        <div id={'featured-project-3'} className={'w-screen'}>*/}
-                {/*            <Image src={'/images/personal-website-cover.png'} alt={'this website!'}*/}
-                {/*                   width={window.innerWidth - 400} height={500} className={''}/>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
+                <div id={'section-3'} className={'min-h-screen'}>
+
+                </div>
             </div>)
     } else {
         return (
