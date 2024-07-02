@@ -7,17 +7,14 @@ import {
     Instances,
     Instance,
     Text3D,
-    Center,
+    Center, PerformanceMonitor,
 } from "@react-three/drei";
-import {gsap} from "gsap";
-import {useGSAP} from "@gsap/react";
-import {ScrollTrigger} from "gsap/ScrollTrigger";
-import {motion, useScroll, useTransform} from "framer-motion";
+import {EffectComposer, Glitch} from "@react-three/postprocessing";
+import {motion} from "framer-motion";
 import {isChrome, isEdge} from "react-device-detect";
+import {useInView} from "react-intersection-observer";
 import {random} from 'mathjs';
 import {useRouter} from "next/navigation";
-import {useLenis} from "@studio-freight/react-lenis"
-import {rgba} from "color2k";
 
 import './page.css';
 
@@ -33,8 +30,10 @@ const particles = Array.from({length: 24}, () => ({
 
 export default function Home() {
 
-    let primaryCanvasRef = useRef(null);
+    const [primaryCanvasRef, canvasInView] = useInView()
     const [isClient, setIsClient] = useState(false);
+    const [dpr, setDpr] = useState([1,2]);
+    const [mousePos, updateMousePos] = useState({x: 0, y: 0});
 
     const cursorRef = useRef(null);
     const secondaryCursorRef = useRef(null);
@@ -91,10 +90,6 @@ export default function Home() {
     ];
     const duplicatedSlides = [...slides, ...slides, ...slides];
 
-    gsap.registerPlugin(useGSAP);
-    useGSAP(() => {
-
-    })
 
     useEffect(() => {
         // client-side code
@@ -107,30 +102,38 @@ export default function Home() {
     }, [])
 
     function updateMouse(e) {
-        gsap.set('#primaryCursor', {
-            x: e.clientX, y: e.clientY,
-            xPercent: -50, yPercent: -50
-        })
-        gsap.to('#secondaryCursor', {
-            x: e.clientX,
-            y: e.clientY,
-            duration: 0.5,
-            ease: 'power2.out',
-            xPercent: -50,
-            yPercent: -50
-        });
+        updateMousePos({x: e.clientX, y: e.clientY});
     }
 
     // noinspection JSSuspiciousNameCombination,JSValidateTypes
     if (isClient) {
         return (
             <div id={'main-div'} className={'overflow-hidden h-screen'} onMouseMove={updateMouse}>
-                <div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-30'} ref={cursorRef}/>
-                <div id={'secondaryCursor'} className={'border-2 border-blue-400 fixed h-8 w-8 rounded-full z-30'}
-                     ref={secondaryCursorRef}/>
+                <motion.div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-30'} ref={cursorRef}
+                style={{
+                    x: mousePos.x,
+                    y: mousePos.y
+                }}/>
+                <motion.div id={'secondaryCursor'} className={'border-2 border-blue-400 fixed h-8 w-8 rounded-full z-30'}
+                     ref={secondaryCursorRef} style={{
+                    x: mousePos.x,
+                    y: mousePos.y,
+                }} transition={{
+                    type: 'spring',
+                    stiffness: 260,
+                    damping: 20
+                }}/>
                 <div id={'section-1'}
                      className={'section-1 flex h-dvh w-screen justify-center'}>
-                    <Canvas camera={{position: [0, 0, 100]}} ref={primaryCanvasRef}>
+                    <Canvas camera={{position: [0, 0, 100]}} ref={primaryCanvasRef}
+                            frameloop={canvasInView ? 'always' : 'never'} dpr={dpr}>
+                        <PerformanceMonitor onDecline={() => {
+                            setDpr([0.5,1])
+                            console.log('decreasing to ' + dpr)
+                        }} onIncline={() => {
+                            setDpr([1,2]);
+                            console.log('increasing to ' + dpr)
+                        }}/>
                         <ambientLight intensity={1.5}/>
                         <directionalLight position={[0, 0, 5]} intensity={1}/>
                         <Instances range={15}>
@@ -182,7 +185,7 @@ export default function Home() {
                             }
                         </motion.div>
                     </div>
-                    <div className={'mt-10 mx-5'}>
+                    <div id={'about-me-info'} className={'mt-10 mx-5'}>
                         <div className={'flex flex-row justify-between mb-20'}>
                             <h1 className={'text-white font-inter text-5xl w-1/2 font-bold'}>Fullstack Software
                                 Developer</h1>
@@ -195,7 +198,7 @@ export default function Home() {
                         <div className={'flex flex-row justify-between mb-20'}>
                             <h1 className={'text-white font-inter text-5xl w-1/2 font-bold'}>Hardware Enthusiast</h1>
                             <p className={'text-white font-inter w-1/2 text-3xl leading-10'} align={'right'}>
-                                I am knowledgable on hardware platforms like Arduino and Raspberry Pi, and can create
+                                I am knowledgeable on hardware platforms like Arduino and Raspberry Pi, and can create
                                 custom
                                 solutions linking to the cloud, IoT, Bluetooth, and more. I can integrate these systems
                                 into
@@ -215,22 +218,22 @@ export default function Home() {
                     </div>
 
                 </div>
-                <div id={'section-3'} className={'h-screen bg-black flex'}>
-                    <div className={'h-full border w-fit flex flex-row'} ref={projectRef}>
-                        <div id={'featured-project-1'} className={'w-screen'}>
-                            <Image src={'/images/personal-website-cover.png'} alt={'this website!'}
-                                   width={window.innerWidth - 400} height={500} className={''}/>
-                        </div>
-                        <div id={'featured-project-2'} className={'w-screen'}>
-                            <Image src={'/images/personal-website-cover.png'} alt={'this website!'}
-                                   width={window.innerWidth - 400} height={500} className={''}/>
-                        </div>
-                        <div id={'featured-project-3'} className={'w-screen'}>
-                            <Image src={'/images/personal-website-cover.png'} alt={'this website!'}
-                                   width={window.innerWidth - 400} height={500} className={''}/>
-                        </div>
-                    </div>
-                </div>
+                {/*<div id={'section-3'} className={'h-screen bg-black flex'}>*/}
+                {/*    <div className={'h-full border w-fit flex flex-row'} ref={projectRef}>*/}
+                {/*        <div id={'featured-project-1'} className={'w-screen'}>*/}
+                {/*            <Image src={'/images/personal-website-cover.png'} alt={'this website!'}*/}
+                {/*                   width={window.innerWidth - 400} height={500} className={''}/>*/}
+                {/*        </div>*/}
+                {/*        <div id={'featured-project-2'} className={'w-screen'}>*/}
+                {/*            <Image src={'/images/personal-website-cover.png'} alt={'this website!'}*/}
+                {/*                   width={window.innerWidth - 400} height={500} className={''}/>*/}
+                {/*        </div>*/}
+                {/*        <div id={'featured-project-3'} className={'w-screen'}>*/}
+                {/*            <Image src={'/images/personal-website-cover.png'} alt={'this website!'}*/}
+                {/*                   width={window.innerWidth - 400} height={500} className={''}/>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
             </div>)
     } else {
         return (
