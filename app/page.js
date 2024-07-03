@@ -10,8 +10,7 @@ import {
     Center, PerformanceMonitor,
 } from "@react-three/drei";
 import gsap from "gsap";
-import {EffectComposer, Glitch} from "@react-three/postprocessing";
-import {motion, useSpring} from "framer-motion";
+import {motion} from "framer-motion";
 import {isChrome, isEdge} from "react-device-detect";
 import {useInView} from "react-intersection-observer";
 import {useGlitch} from "react-powerglitch";
@@ -129,19 +128,25 @@ export default function Home() {
         });
     }
 
-    function handleHover(hovering) {
+    function handleHover(hovering, invert=false, invertID=null) {
         setMouseState({hovering: hovering});
-        if(hovering){
+        if (hovering) {
             primaryCursorRef.current.style.opacity = 0;
             secondaryCursorRef.current.style.backgroundColor = '#60a5fa';
             secondaryCursorRef.current.style.mixBlendMode = 'difference';
             gsap.to('#secondaryCursor', {
-                scale: 2,
+                scale: 2.5,
                 duration: 0.5,
                 ease: 'power2.out'
             })
-        }
-        else{
+            if(invert){
+                gsap.to(invertID, {
+                    filter: 'invert(1)',
+                    duration: 0.5,
+                    ease: 'power2.out'
+                })
+            }
+        } else {
             primaryCursorRef.current.style.opacity = 1;
             secondaryCursorRef.current.style.backgroundColor = 'transparent';
             secondaryCursorRef.current.style.mixBlendMode = 'normal';
@@ -150,6 +155,13 @@ export default function Home() {
                 duration: 0.5,
                 ease: 'power2.out'
             })
+            if(invert){
+                gsap.to(invertID, {
+                    filter: 'invert(0)',
+                    duration: 0.5,
+                    ease: 'power2.out'
+                })
+            }
         }
     }
 
@@ -158,9 +170,11 @@ export default function Home() {
         return (
             <div id={'main-div'} className={'overflow-hidden flex flex-col h-fit cursor-none'}
                  ref={mainRef}>
-                <div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-30 pointer-events-none'} ref={primaryCursorRef}/>
+                <div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-30 pointer-events-none'}
+                     ref={primaryCursorRef}/>
                 <div id={'secondaryCursor'}
-                     className={'border-2 border-blue-400 fixed h-8 w-8 rounded-full z-20 pointer-events-none'} ref={secondaryCursorRef}/>
+                     className={'border-2 border-blue-400 fixed h-8 w-8 rounded-full z-20 pointer-events-none'}
+                     ref={secondaryCursorRef}/>
                 <div id={'section-1'}
                      className={'section-1 flex min-h-screen w-screen'}>
                     <div className={'h-screen w-screen'}>
@@ -193,52 +207,58 @@ export default function Home() {
                          className={'absolute self-start mt-20 backdrop-blur-md px-20 py-5 rounded-2xl'}>
                         <h1 className={'font-inter font-bold text-blue-100 text-5xl'}> Hey, I'm</h1>
                     </div>
+                </div>
+                <div id={'bottom-bar'} className={'flex flex-row absolute w-screen bottom-20 items-center h-[100px]'}>
+                    <div id={'bottom-box-1'} className={'basis-1/3 h-full flex items-center justify-center'}>
+                        <div id={'titles'} className={'backdrop-blur-md rounded-2xl py-3 px-6 flex text-center'}>
+                            <h1 className={'font-inter text-white text-5xl'} ref={glitch.ref}>Fullstack
+                                Developer</h1>
+                        </div>
                     </div>
-                <div id={'bottom-bar'} className={'flex flex-row absolute w-screen bottom-20 border border-green-500 items-center'}>
-                    <div id={'titles'} className={'backdrop-blur-md rounded-2xl mx-10'}>
-                        <h1 className={'font-inter text-white text-4xl mb-4'} ref={glitch.ref}>Fullstack
-                            Developer</h1>
+                    <div id={'bottom-box-2'} className={'basis-1/3 h-full flex items-center justify-center'}>
+                        <div id={'scroll-down-indicator'}
+                             className={'animate-bounce rounded-full backdrop-blur-md mx-auto h-fit w-fit p-3'}>
+                            <Image src={'/images/mouse.svg'} alt={'down arrow'} width={45} height={45} unoptimized
+                                   className={'invert'} priority={true}/>
+                        </div>
                     </div>
-                    <div id={'scroll-down-indicator'}
-                         className={'animate-bounce rounded-full self-end backdrop-blur-md p-3 mx-auto'}>
-                        <Image src={'/images/mouse.svg'} alt={'down arrow'} width={45} height={45} unoptimized
-                               className={'invert'} priority={true}/>
-                    </div>
-                    <div id={'socials'}
-                         className={'backdrop-blur-md rounded-2xl flex flex-row mx-10'}>
-                        <button className={'mx-2 my-2'} onClick={() => {
-                            router.push('https://www.github.com/SpyGuy0215')
-                        }} onMouseOver={() => {
-                            handleHover(true)
-                        }} onMouseOut={() => {
-                            handleHover(false)
-                        }}>
-                            <Image src={'/icons/github.svg'} alt={'github'} width={80} height={80}
-                                   className={'invert'}
-                                   unoptimized/>
-                        </button>
-                        <button className={'mx-2 my-2'} onClick={() => {
-                            router.push('https://www.linkedin.com/in/shashank-prasanna/')
-                        }} onMouseOver={() => {
-                            handleHover(true)
-                        }} onMouseOut={() => {
-                            handleHover(false)
-                        }}>
-                            <Image src={'/icons/linkedin.svg'} alt={'linkedin'} width={80} height={80}
-                                   className={'invert'}
-                                   unoptimized/>
-                        </button>
-                        <button className={'mx-2 my-2'} onClick={() => {
-                            router.push('mailto:shashankprasanna1@gmail.com')
-                        }} onMouseOver={() => {
-                            handleHover(true)
-                        }} onMouseOut={() => {
-                            handleHover(false)
-                        }}>
-                            <Image src={'/icons/gmail.svg'} alt={'linkedin'} width={80} height={80}
-                                   className={'invert'}
-                                   unoptimized/>
-                        </button>
+                    <div id={'bottom-box-3'} className={'basis-1/3 h-full flex items-center justify-center'}>
+                        <div id={'socials'}
+                             className={'backdrop-blur-md rounded-2xl flex flex-row mx-10'}>
+                            <button className={'mx-2 my-2'} onClick={() => {
+                                router.push('https://www.github.com/SpyGuy0215')
+                            }} onMouseOver={() => {
+                                handleHover(true)
+                            }} onMouseOut={() => {
+                                handleHover(false)
+                            }}>
+                                <Image src={'/icons/github.svg'} alt={'github'} width={80} height={80}
+                                       className={'invert'}
+                                       unoptimized/>
+                            </button>
+                            <button className={'mx-2 my-2'} onClick={() => {
+                                router.push('https://www.linkedin.com/in/shashank-prasanna/')
+                            }} onMouseOver={() => {
+                                handleHover(true)
+                            }} onMouseOut={() => {
+                                handleHover(false)
+                            }}>
+                                <Image src={'/icons/linkedin.svg'} alt={'linkedin'} width={80} height={80}
+                                       className={'invert'}
+                                       unoptimized/>
+                            </button>
+                            <button className={'mx-2 my-2'} onClick={() => {
+                                router.push('mailto:shashankprasanna1@gmail.com')
+                            }} onMouseOver={() => {
+                                handleHover(true)
+                            }} onMouseOut={() => {
+                                handleHover(false)
+                            }}>
+                                <Image src={'/icons/gmail.svg'} alt={'linkedin'} width={80} height={80}
+                                       className={'invert'}
+                                       unoptimized/>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div id={'section-2'}
@@ -271,7 +291,7 @@ export default function Home() {
                         <div className={'flex flex-row justify-between mb-20'}>
                             <h1 className={'text-white font-inter text-5xl w-1/2 font-bold'}>Fullstack Software
                                 Developer</h1>
-                            <p className={'text-white font-inter w-1/2 text-3xl leading-10'} align={'right'}>
+                            <p className={'text-white font-inter w-1/2 text-3xl leading-10'} align={'left'}>
                                 I am well-versed in a number of front-end technologies like NextJS and Tailwind, and can
                                 connect them to powerful backend solutions built with tools like Python, Java, and
                                 Firebase
@@ -279,7 +299,7 @@ export default function Home() {
                         </div>
                         <div className={'flex flex-row justify-between mb-20'}>
                             <h1 className={'text-white font-inter text-5xl w-1/2 font-bold'}>Hardware Enthusiast</h1>
-                            <p className={'text-white font-inter w-1/2 text-3xl leading-10'} align={'right'}>
+                            <p className={'text-white font-inter w-1/2 text-3xl leading-10'} align={'left'}>
                                 I am knowledgeable on hardware platforms like Arduino and Raspberry Pi, and can create
                                 custom
                                 solutions linking to the cloud, IoT, Bluetooth, and more. I can integrate these systems
@@ -290,7 +310,7 @@ export default function Home() {
                         </div>
                         <div className={'flex flex-row justify-between mb-20'}>
                             <h1 className={'text-white font-inter text-5xl w-1/2 font-bold'}>Junior in High School</h1>
-                            <p className={'text-white font-inter w-1/2 text-3xl leading-10'} align={'right'}>
+                            <p className={'text-white font-inter w-1/2 text-3xl leading-10'} align={'left'}>
                                 Motivated learner, taking AP Computer Science A, AP Calculus AB, and AP Biology.
                                 Currently
                                 have a 4.0 GPA. Plan to further my education in the field of computer science and
@@ -300,10 +320,26 @@ export default function Home() {
                     </div>
 
                 </div>
-                <div id={'section-3'} className={'min-h-screen'}>
-
+                <div id={'section-3'} className={'section-3 min-w-full flex flex-col'}>
+                    <h1 className={'font-bold font-inter text-white text-8xl mx-auto mt-10 mb-20'}>
+                        Check out my blog!
+                    </h1>
+                    <button id={'blog-link'} onClick={() => {
+                        router.push('/blog')
+                    }}
+                        className={'border border-white w-96 mb-24 mx-auto h-16 flex flex-row justify-center items-center bg-black'}
+                        onMouseOver={() => {
+                            handleHover(true, true, '#blog-link')
+                        }} onMouseOut={() => {
+                        handleHover(false, true, '#blog-link')
+                    }}>
+                        <h3 className={'font-inter text-white text-3xl'}>Visit awesomeness</h3>
+                        <Image src={'/icons/link.svg'} height={30} width={30} alt={''} className={'invert ml-4'}/>
+                    </button>
                 </div>
-            </div>)
+            </div>
+
+        )
     } else {
         return (
             <div>
