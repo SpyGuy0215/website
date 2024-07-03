@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function RootLayout({children}) {
     return (
-        <html lang="en" className={'ff-no-scrollbar scroll-smooth cursor-none pointer-events-none'}>
+        <html lang="en" className={'ff-no-scrollbar scroll-smooth'}>
             <body>
                 <SmoothScrolling>
                     {children}

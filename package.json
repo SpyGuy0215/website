@@ -28,6 +28,7 @@
     "react-dom": "^18",
     "react-intersection-observer": "^9.10.3",
     "react-lottie-player": "^2.0.0",
+    "react-powerglitch": "^1.0.3",
     "tailwind-scrollbar-hide": "^1.1.7",
     "three": "^0.164.1"
   },

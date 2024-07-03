@@ -14,6 +14,7 @@ import {EffectComposer, Glitch} from "@react-three/postprocessing";
 import {motion, useSpring} from "framer-motion";
 import {isChrome, isEdge} from "react-device-detect";
 import {useInView} from "react-intersection-observer";
+import {useGlitch} from "react-powerglitch";
 import {random} from 'mathjs';
 import {useRouter} from "next/navigation";
 
@@ -35,12 +36,22 @@ export default function Home() {
     const [isClient, setIsClient] = useState(false);
     const [dpr, setDpr] = useState([1, 2]);
     const carouselImageDimensions = 80;
-    const [githubButtonStates, setGithubButtonStates] = useState({
-        isHovered: false,
-        isClicked: false
+    const [mouseState, setMouseState] = useState({
+        hovering: false,
     })
+    const primaryCursorRef = useRef();
+    const secondaryCursorRef = useRef();
+    const mainRef = useRef();
+    const glitch = useGlitch({
+        "timing": {
+            'easing': 'ease-in-out',
+            'duration': 5000,
+        },
+        'slice': {
+            hueRotate: true,
+        }
+    });
     const router = useRouter();
-
     const slides = [
         {
             icon: <Image src={'/icons/arduino.svg'} alt={'arduino'} className={'invert'} width={carouselImageDimensions}
@@ -118,14 +129,38 @@ export default function Home() {
         });
     }
 
+    function handleHover(hovering) {
+        setMouseState({hovering: hovering});
+        if(hovering){
+            primaryCursorRef.current.style.opacity = 0;
+            secondaryCursorRef.current.style.backgroundColor = '#60a5fa';
+            secondaryCursorRef.current.style.mixBlendMode = 'difference';
+            gsap.to('#secondaryCursor', {
+                scale: 2,
+                duration: 0.5,
+                ease: 'power2.out'
+            })
+        }
+        else{
+            primaryCursorRef.current.style.opacity = 1;
+            secondaryCursorRef.current.style.backgroundColor = 'transparent';
+            secondaryCursorRef.current.style.mixBlendMode = 'normal';
+            gsap.to('#secondaryCursor', {
+                scale: 1,
+                duration: 0.5,
+                ease: 'power2.out'
+            })
+        }
+    }
+
     // noinspection JSSuspiciousNameCombination,JSValidateTypes
     if (isClient) {
         return (
-            <div id={'main-div'} className={'overflow-hidden flex flex-col h-fit border border-red-600'}
-                 >
-                <div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-30'}/>
+            <div id={'main-div'} className={'overflow-hidden flex flex-col h-fit cursor-none'}
+                 ref={mainRef}>
+                <div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-30 pointer-events-none'} ref={primaryCursorRef}/>
                 <div id={'secondaryCursor'}
-                     className={'border-2 border-blue-400 fixed h-8 w-8 rounded-full z-20 bg-blend-difference'}/>
+                     className={'border-2 border-blue-400 fixed h-8 w-8 rounded-full z-20 pointer-events-none'} ref={secondaryCursorRef}/>
                 <div id={'section-1'}
                      className={'section-1 flex min-h-screen w-screen'}>
                     <div className={'h-screen w-screen'}>
@@ -158,20 +193,52 @@ export default function Home() {
                          className={'absolute self-start mt-20 backdrop-blur-md px-20 py-5 rounded-2xl'}>
                         <h1 className={'font-inter font-bold text-blue-100 text-5xl'}> Hey, I'm</h1>
                     </div>
+                    </div>
+                <div id={'bottom-bar'} className={'flex flex-row absolute w-screen bottom-20 border border-green-500 items-center'}>
+                    <div id={'titles'} className={'backdrop-blur-md rounded-2xl mx-10'}>
+                        <h1 className={'font-inter text-white text-4xl mb-4'} ref={glitch.ref}>Fullstack
+                            Developer</h1>
+                    </div>
                     <div id={'scroll-down-indicator'}
-                         className={'animate-bounce absolute rounded-full self-end mb-20 backdrop-blur-md p-3'}>
+                         className={'animate-bounce rounded-full self-end backdrop-blur-md p-3 mx-auto'}>
                         <Image src={'/images/mouse.svg'} alt={'down arrow'} width={45} height={45} unoptimized
                                className={'invert'} priority={true}/>
                     </div>
-                    <div id={'socials'} className={'absolute self-end mb-20 backdrop-blur-md rounded-2xl right-20 flex flex-row'}>
-                        <a className={'mx-1 my-1'} href={'https://www.github.com/SpyGuy0215'}>
-                            <Image src={'/icons/github.svg'} alt={'github'} width={60} height={60} className={'invert'}
+                    <div id={'socials'}
+                         className={'backdrop-blur-md rounded-2xl flex flex-row mx-10'}>
+                        <button className={'mx-2 my-2'} onClick={() => {
+                            router.push('https://www.github.com/SpyGuy0215')
+                        }} onMouseOver={() => {
+                            handleHover(true)
+                        }} onMouseOut={() => {
+                            handleHover(false)
+                        }}>
+                            <Image src={'/icons/github.svg'} alt={'github'} width={80} height={80}
+                                   className={'invert'}
                                    unoptimized/>
-                        </a>
-                        <a className={'mx-1 my-1'}>
-                            <Image src={'/icons/linkedin.svg'} alt={'linkedin'} width={60} height={60} className={'invert'}
+                        </button>
+                        <button className={'mx-2 my-2'} onClick={() => {
+                            router.push('https://www.linkedin.com/in/shashank-prasanna/')
+                        }} onMouseOver={() => {
+                            handleHover(true)
+                        }} onMouseOut={() => {
+                            handleHover(false)
+                        }}>
+                            <Image src={'/icons/linkedin.svg'} alt={'linkedin'} width={80} height={80}
+                                   className={'invert'}
                                    unoptimized/>
-                        </a>
+                        </button>
+                        <button className={'mx-2 my-2'} onClick={() => {
+                            router.push('mailto:shashankprasanna1@gmail.com')
+                        }} onMouseOver={() => {
+                            handleHover(true)
+                        }} onMouseOut={() => {
+                            handleHover(false)
+                        }}>
+                            <Image src={'/icons/gmail.svg'} alt={'linkedin'} width={80} height={80}
+                                   className={'invert'}
+                                   unoptimized/>
+                        </button>
                     </div>
                 </div>
                 <div id={'section-2'}
