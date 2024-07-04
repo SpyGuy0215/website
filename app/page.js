@@ -21,7 +21,7 @@ import './page.css';
 
 const particleSpeed = 0.5;
 
-const particles = Array.from({length: 24}, () => ({
+const particles = Array.from({length: 25}, () => ({
     xFactor: random(-150, 150),
     zFactor: random(-80, 80),
     xSpeed: random(-1 * particleSpeed, particleSpeed),
@@ -35,9 +35,6 @@ export default function Home() {
     const [isClient, setIsClient] = useState(false);
     const [dpr, setDpr] = useState([1, 2]);
     const carouselImageDimensions = 80;
-    const [mouseState, setMouseState] = useState({
-        hovering: false,
-    })
     const primaryCursorRef = useRef();
     const secondaryCursorRef = useRef();
     const mainRef = useRef();
@@ -100,7 +97,6 @@ export default function Home() {
     ];
     const duplicatedSlides = [...slides, ...slides, ...slides];
 
-
     useEffect(() => {
         // client-side code
         setIsClient(true);
@@ -109,6 +105,7 @@ export default function Home() {
             document.body.classList.add('scrollbar-none'); // removes scrollbar on Chrome and Edge
         } // Firefox class is already applied for no scrollbar
 
+        // event listener to update custom cursor
         window.addEventListener('mousemove', updateMouse);
 
     }, [])
@@ -128,8 +125,7 @@ export default function Home() {
         });
     }
 
-    function handleHover(hovering, invert=false, invertID=null) {
-        setMouseState({hovering: hovering});
+    function handleHover(hovering, invert = false, invertID = null) {
         if (hovering) {
             primaryCursorRef.current.style.opacity = 0;
             secondaryCursorRef.current.style.backgroundColor = '#60a5fa';
@@ -139,7 +135,7 @@ export default function Home() {
                 duration: 0.5,
                 ease: 'power2.out'
             })
-            if(invert){
+            if (invert) {
                 gsap.to(invertID, {
                     filter: 'invert(1)',
                     duration: 0.5,
@@ -155,7 +151,7 @@ export default function Home() {
                 duration: 0.5,
                 ease: 'power2.out'
             })
-            if(invert){
+            if (invert) {
                 gsap.to(invertID, {
                     filter: 'invert(0)',
                     duration: 0.5,
@@ -327,10 +323,10 @@ export default function Home() {
                     <button id={'blog-link'} onClick={() => {
                         router.push('/blog')
                     }}
-                        className={'border border-white w-96 mb-24 mx-auto h-16 flex flex-row justify-center items-center bg-black'}
-                        onMouseOver={() => {
-                            handleHover(true, true, '#blog-link')
-                        }} onMouseOut={() => {
+                            className={'border border-white w-96 mb-24 mx-auto h-16 flex flex-row justify-center items-center bg-black'}
+                            onMouseOver={() => {
+                                handleHover(true, true, '#blog-link')
+                            }} onMouseOut={() => {
                         handleHover(false, true, '#blog-link')
                     }}>
                         <h3 className={'font-inter text-white text-3xl'}>Visit awesomeness</h3>
