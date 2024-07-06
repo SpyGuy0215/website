@@ -1,8 +1,7 @@
----
-title: "Creating a Custom Cursor with React and GSAP"
-excerpt: "Ever wondered how to create cool custom cursors for your website? They're simpler than you might think."
-author: "Shashank Prasanna"
----
+import MdxLayout from "@/app/components/mdx/mdx-layout";
+
+
+# Creating a Custom Cursor With React & GSAP
 
 Ever wondered how to create cool custom cursors for your website? They're simpler than you might think.
 In this post, I'll show you how to create a custom cursor using React and GSAP. If you want a preview of what the cursor
@@ -107,3 +106,15 @@ This should hide the user's cursor, leaving only the beautiful custom cursor vis
 
 And that's it! If you want to add even more effects to the cursor, like expanding and interacting with the divs below
 it, you can read my follow-up tutorial on how to do that.
+
+export default function MDXPage({children}) {
+    return <MdxLayout>{children}</MdxLayout>
+
+}
+
+export const metadata = {
+    title: "Creating a Custom Cursor with React and GSAP",
+    excerpt: "Ever wondered how to create cool custom cursors for your website? They're simpler than you might think.",
+    publishDate: "07/06/2024", // Date in MM/DD/YYYY format
+    author: "Shashank Prasanna"
+}
