@@ -31,7 +31,7 @@ Navigate to the `src/page.js` file. This is where we will be writing our custom 
 The cursor we'll be the creating today is actually _two_ parts: an outer (secondary) circle and an inner (primary)
 circle. We can make both with divs. Go to the top level of your page structure and add the following code:
 
-```jsx filename="src/page.js"
+```jsx title="src/page.js"
 <div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-30 pointer-events-none'}
      ref={primaryCursorRef}/>
 <div id={'secondaryCursor'}
@@ -61,10 +61,8 @@ actual mouse cursor around. We can do this by adding the following code to the `
 
 ```jsx
 useEffect(() => {
-    // whatever code above...
     document.addEventListener('mousemove', updateMouse);
-    // and below...
-});
+}, []);
 ```
 
 We're calling the `updateMouse()` function whenever the mouse position moves - let's make that now!
