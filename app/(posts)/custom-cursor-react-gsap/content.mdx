@@ -1,4 +1,5 @@
 import MdxLayout from "@/app/components/mdx/mdx-layout";
+import Alert from "@/app/components/mdx/Alert";
 
 
 # Creating a Custom Cursor With React & GSAP
@@ -30,7 +31,7 @@ Navigate to the `src/page.js` file. This is where we will be writing our custom 
 The cursor we'll be the creating today is actually _two_ parts: an outer (secondary) circle and an inner (primary)
 circle. We can make both with divs. Go to the top level of your page structure and add the following code:
 
-```jsx
+```jsx filename="src/page.js"
 <div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-30 pointer-events-none'}
      ref={primaryCursorRef}/>
 <div id={'secondaryCursor'}
@@ -38,7 +39,12 @@ circle. We can make both with divs. Go to the top level of your page structure a
      ref={secondaryCursorRef}/>
 ```
 
-**This guide assumes you are using Tailwind, but if not, just apply the relevant classes to your components.**
+You can change the classes to suit your design. The `bg-blue-300` and `border-blue-400` classes are just
+placeholders.
+
+<Alert>
+    This guide assumes you are using Tailwind, but if not, just apply the relevant classes to your components.
+</Alert>
 
 You should note that the `pointer-events-none` class is applied to both cursors. This is because we don't want the
 cursor to interfere with the user's ability to interact with the page. The `z-30` and `z-20` classes are used to ensure
@@ -83,14 +89,14 @@ function updateMouse() {
 Let's breakdown what's happening here:
 
 - We are using `gsap.set()` to _instantly_ set the position of the inner, primary circle. We are setting the `x` and `y`
-  coordinates to the current mouse position, and the `xPercent` and `yPercent` to -50. This is because we want the
-  cursor to be centered around the mouse position (the default would be the top-left corner of the div).
+coordinates to the current mouse position, and the `xPercent` and `yPercent` to -50. This is because we want the
+cursor to be centered around the mouse position (the default would be the top-left corner of the div).
 - We are using `gsap.to()` to animate the position of the outer, secondary circle. We are also setting the duration of
-  the animation to 0.5 seconds, and the easing function to `power2.out`. This will create a fluid movement of this
-  circle to the new position.
+the animation to 0.5 seconds, and the easing function to `power2.out`. This will create a fluid movement of this
+circle to the new position.
 
-Yes, there are functions for more speedy updates contained within GSAP, but they are more complicated. I also found 
-through testing that it really doesn't make that much of a difference; GSAP even concedes that in their docs. 
+Yes, there are functions for more speedy updates contained within GSAP, but they are more complicated. I also found
+through testing that it really doesn't make that much of a difference; GSAP even concedes that in their docs.
 
 ## Step 3: Final Touches
 You might see one issue here: the actual user cursor is still there! This is a simple fix: Add this class the body of
@@ -100,7 +106,7 @@ your page:
 <body className={'cursor-none'}>
 ```
 
-This should hide the user's cursor, leaving only the beautiful custom cursor visible. 
+This should hide the user's cursor, leaving only the beautiful custom cursor visible.
 
 ## Conclusion and Further Steps
 
