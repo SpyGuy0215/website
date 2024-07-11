@@ -1,11 +1,4 @@
 export default function Alert({children, type = 'info'}) {
-    let alertColor = '#f0f0f0';
-    if (type === 'info') alertColor = '#e0f2fe';
-    if (type === 'warning') alertColor = '#fef3c7';
-    if (type === 'danger') alertColor = '#fee2e2';
-    console.log('alertColor', alertColor)
-    console.log('type', type)
-
     return (
         <>
             <div className={'my-5'}>
