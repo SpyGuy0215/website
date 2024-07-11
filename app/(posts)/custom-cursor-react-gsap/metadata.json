@@ -1,6 +1,7 @@
 {
-  "title": "Creating a Custom Cursor with React and GSAP",
+  "ID": "custom-cursor-react-gsap",
+  "author": "Shashank Prasanna",
   "excerpt": "Ever wondered how to create cool custom cursors for your website? They're simpler than you might think.",
   "publishDate": "07/06/2024",
-  "author": "Shashank Prasanna"
+  "title": "Creating a Custom Cursor with React and GSAP"
 }
