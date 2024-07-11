@@ -11,7 +11,6 @@ async function getPosts() {
         postMetadata = JSON.parse(postMetadata);
         posts.push(postMetadata);
     }
-    console.log(posts);
     return posts;
 }
 
@@ -22,7 +21,7 @@ export default async function Page() {
         <div className={'bg-slate-100 min-h-screen w-screen flex flex-col'}>
             <h1 className={'font-inter font-semibold text-5xl pt-16 mx-auto'}>Blog</h1>
             <div className={'grid grid-cols-2 mx-2 my-20'}>
-                {posts ? posts.map((post, index) => {
+                {posts ? posts.map((post) => {
                     return (
                         <Link href={`/${post.ID}`} key={post.ID}>
                             <div
