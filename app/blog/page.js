@@ -28,9 +28,9 @@ export default async function Page() {
                                 className={'border border-slate-400 hover:border-slate-600 hover:shadow-lg rounded-lg mx-4 p-4'}>
                                 <div className={'flex flex-col md:flex-row justify-between'}>
                                     <h2 className={'font-inter font-semibold text-2xl mr-4'}>{post.title}</h2>
-                                    <p className={'mt-2 md:mt-0'}>{post.publishDate}</p>
+                                    <p className={'mt-2 md:mt-0 font-inter'}>{post.publishDate}</p>
                                 </div>
-                                <p className={'mt-2'}>{post.excerpt}</p>
+                                <p className={'mt-2 font-inter'}>{post.excerpt}</p>
                             </div>
                         </Link>
                     )

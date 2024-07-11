@@ -4,7 +4,7 @@ export default function Footer() {
     return (
         <div className={'w-screen h-24 border-t flex flex-row'}>
             <div className={'w-1/2 border-r h-full flex'}>
-                <p className={'self-center mx-auto text-center'}>©2024 Shashank Prasanna. All Rights Reserved.</p>
+                <p className={'self-center mx-auto text-center font-inter'}>©2024 Shashank Prasanna. All Rights Reserved.</p>
             </div>
             <div className={'w-1/2 h-full flex'}>
                 <div className={'mx-auto w-fit h-full flex flex-row'}>
