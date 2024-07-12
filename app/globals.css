@@ -2,21 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-    @font-face {
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 400;
-        src: url('../public/fonts/inter/Inter-Regular.ttf');
-    }
-    @font-face {
-        font-family: 'Raleway';
-        font-style: normal;
-        font-weight: 400;
-        src: url('../public/fonts/raleway/static/Raleway-Regular.ttf');
-    }
-}
-
 .ff-no-scrollbar {
     overflow-y: scroll;
     scrollbar-width: none;

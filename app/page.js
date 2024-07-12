@@ -1,39 +1,19 @@
 "use client";
 
 import {useState, useRef, useEffect} from 'react';
-import {Canvas, useFrame} from "@react-three/fiber";
 import Image from "next/image"
-import {
-    Instances,
-    Instance,
-    Text3D,
-    Center, PerformanceMonitor,
-} from "@react-three/drei";
 import gsap from "gsap";
 import {motion} from "framer-motion";
 import {isChrome, isEdge} from "react-device-detect";
-import {useInView} from "react-intersection-observer";
 import {useGlitch} from "react-powerglitch";
-import {random} from 'mathjs';
 import {useRouter} from "next/navigation";
 
 import './page.css';
 
-const particleSpeed = 0.5;
-
-const particles = Array.from({length: 25}, () => ({
-    xFactor: random(-150, 150),
-    zFactor: random(-80, 80),
-    xSpeed: random(-1 * particleSpeed, particleSpeed),
-    zSpeed: random(-1 * particleSpeed, particleSpeed),
-    xRotFactor: random(-2 * 3.14, 2 * 3.14), //convert to radians
-}))
 
 export default function Home() {
 
-    const [primaryCanvasRef, canvasInView] = useInView()
     const [isClient, setIsClient] = useState(false);
-    const [dpr, setDpr] = useState([1, 2]);
     const carouselImageDimensions = 80;
     const primaryCursorRef = useRef();
     const secondaryCursorRef = useRef();
@@ -96,6 +76,9 @@ export default function Home() {
         }
     ];
     const duplicatedSlides = [...slides, ...slides, ...slides];
+    const particleInfo = {
+        'count': 12,
+    }
 
     useEffect(() => {
         // client-side code
@@ -173,32 +156,11 @@ export default function Home() {
                      ref={secondaryCursorRef}/>
                 <div id={'section-1'}
                      className={'section-1 flex min-h-screen w-screen'}>
-                    <div className={'h-screen w-screen'}>
-                        <Canvas camera={{position: [0, 0, 100]}} ref={primaryCanvasRef}
-                                frameloop={canvasInView ? 'always' : 'never'} dpr={dpr}>
-                            <PerformanceMonitor onDecline={() => {
-                                setDpr([0.5, 1])
-                                console.log('decreasing to ' + dpr)
-                            }} onIncline={() => {
-                                setDpr([1, 2]);
-                                console.log('increasing to ' + dpr)
-                            }}/>
-                            <ambientLight intensity={1.5}/>
-                            <directionalLight position={[0, 0, 5]} intensity={1}/>
-                            <Instances range={15}>
-                                <boxGeometry args={[15, 15, 0.1]}/>
-                                <meshStandardMaterial color={'#ffffff'}/>
-                                {particles.map((data, i) => (<Square key={i} {...data}/>))}
-                                <Center>
-                                    <Text3D font={'/fonts/inter/Inter_Bold.json'} size={30} height={3}
-                                            bevelEnabled bevelSize={0.6} bevelSegments={2} letterSpacing={1.1}>
-                                        Shashank
-                                        <meshNormalMaterial/> {/* possibly replace this with a custom material */}
-                                    </Text3D>
-                                </Center>
-                            </Instances>
-                        </Canvas>
+                    <div className={'absolute -z-10 h-screen w-screen'}>
                     </div>
+                    <h1 className={'mx-auto my-auto font-inter font-bold text-blue-500 text-7xl sm:text-9xl lg:text-main-title-xl'}>
+                        Shashank
+                    </h1>
                     <div id='short-intro-text'
                          className={'absolute self-start mt-20 backdrop-blur-md px-20 py-5 rounded-2xl'}>
                         <h1 className={'font-inter font-bold text-blue-100 text-5xl'}> Hey, I'm</h1>
@@ -207,11 +169,11 @@ export default function Home() {
                 <div id={'bottom-bar'} className={'flex flex-row absolute w-screen bottom-20 items-center h-[100px]'}>
                     <div id={'bottom-box-1'} className={'basis-1/3 h-full flex items-center justify-center'}>
                         <div id={'titles'} className={'backdrop-blur-md rounded-2xl py-3 px-6 flex text-center'}>
-                            <h1 className={'font-inter text-white text-5xl'} ref={glitch.ref}>Fullstack
+                            <h1 className={'font-inter text-white text-3xl md:text-5xl'} ref={glitch.ref}>Fullstack
                                 Developer</h1>
                         </div>
                     </div>
-                    <div id={'bottom-box-2'} className={'basis-1/3 h-full flex items-center justify-center'}>
+                    <div id={'bottom-box-2'} className={'basis-1/3 h-full flex items-center justify-center invisible sm:visible'}>
                         <div id={'scroll-down-indicator'}
                              className={'animate-bounce rounded-full backdrop-blur-md mx-auto h-fit w-fit p-3'}>
                             <Image src={'/images/mouse.svg'} alt={'down arrow'} width={45} height={45} unoptimized
@@ -220,7 +182,7 @@ export default function Home() {
                     </div>
                     <div id={'bottom-box-3'} className={'basis-1/3 h-full flex items-center justify-center'}>
                         <div id={'socials'}
-                             className={'backdrop-blur-md rounded-2xl flex flex-row mx-10'}>
+                             className={'backdrop-blur-md rounded-2xl flex flex-col sm:flex-row scale-90 sm:scale-100'}>
                             <button className={'mx-2 my-2'} onClick={() => {
                                 router.push('https://www.github.com/SpyGuy0215')
                             }} onMouseOver={() => {
@@ -259,7 +221,7 @@ export default function Home() {
                 </div>
                 <div id={'section-2'}
                      className={'section-2 min-w-full flex flex-col'}>
-                    <h1 className={'font-bold font-inter text-white text-8xl mx-auto mt-10'}>
+                    <h1 className={'font-bold font-inter text-white text-6xl sm:text-8xl mx-auto mt-10 text-center'}>
                         About Me
                     </h1>
                     <div id={'image-scroller'} className={'relative w-full overflow-hidden mt-10'}>
@@ -273,9 +235,9 @@ export default function Home() {
                         }}>
                             {
                                 duplicatedSlides.map((slide, i) => (
-                                    <div key={i} className="flex-shrink-0" style={{width: `${100 / slides.length}%`}}>
+                                    <div key={i} className="flex-shrink-0">
                                         <div
-                                            className="flex flex-col items-center justify-center h-full text-6xl text-white">
+                                            className="flex flex-col items-center justify-center h-full text-white mx-10">
                                             {slide.icon}
                                         </div>
                                     </div>
@@ -285,17 +247,17 @@ export default function Home() {
                     </div>
                     <div id={'about-me-info'} className={'mt-10 mx-5'}>
                         <div className={'flex flex-row justify-between mb-20'}>
-                            <h1 className={'text-white font-inter text-5xl w-1/2 font-bold'}>Fullstack Software
+                            <h1 className={'text-white font-inter text-4xl sm:text-5xl w-1/2 font-bold'}>Fullstack Software
                                 Developer</h1>
-                            <p className={'text-white font-inter w-1/2 text-3xl leading-10'} align={'left'}>
+                            <p className={'text-white font-inter w-1/2 text-lg text-right sm:text-left sm:text-3xl leading-10 justify-center'}>
                                 I am well-versed in a number of front-end technologies like NextJS and Tailwind, and can
                                 connect them to powerful backend solutions built with tools like Python, Java, and
-                                Firebase
+                                Firebase.
                             </p>
                         </div>
                         <div className={'flex flex-row justify-between mb-20'}>
-                            <h1 className={'text-white font-inter text-5xl w-1/2 font-bold'}>Hardware Enthusiast</h1>
-                            <p className={'text-white font-inter w-1/2 text-3xl leading-10'} align={'left'}>
+                            <h1 className={'text-white font-inter text-4xl sm:text-5xl w-1/2 font-bold'}>Hardware Enthusiast</h1>
+                            <p className={'text-white font-inter w-1/2 text-lg text-right sm:text-left sm:text-3xl leading-10'}>
                                 I am knowledgeable on hardware platforms like Arduino and Raspberry Pi, and can create
                                 custom
                                 solutions linking to the cloud, IoT, Bluetooth, and more. I can integrate these systems
@@ -305,8 +267,8 @@ export default function Home() {
                             </p>
                         </div>
                         <div className={'flex flex-row justify-between mb-20'}>
-                            <h1 className={'text-white font-inter text-5xl w-1/2 font-bold'}>Junior in High School</h1>
-                            <p className={'text-white font-inter w-1/2 text-3xl leading-10'} align={'left'}>
+                            <h1 className={'text-white font-inter text-4xl sm:text-5xl w-1/2 font-bold'}>Junior in High School</h1>
+                            <p className={'text-white font-inter w-1/2 text-lg text-right sm:text-left sm:text-3xl leading-10'}>
                                 Motivated learner, taking AP Computer Science A, AP Calculus AB, and AP Biology.
                                 Currently
                                 have a 4.0 GPA. Plan to further my education in the field of computer science and
@@ -317,7 +279,7 @@ export default function Home() {
 
                 </div>
                 <div id={'section-3'} className={'section-3 min-w-full flex flex-col'}>
-                    <h1 className={'font-bold font-inter text-white text-8xl mx-auto mt-10 mb-20'}>
+                    <h1 className={'font-bold font-inter text-white text-6xl sm:text-8xl mx-auto mt-10 mb-20 text-center'}>
                         Check out my blog!
                     </h1>
                     <button id={'blog-link'} onClick={() => {
@@ -343,38 +305,4 @@ export default function Home() {
             </div>
         )
     }
-}
-
-function Square({xFactor, zFactor, xSpeed, zSpeed, xRotFactor}) {
-    const ref = useRef();
-    const [isInitState, setIsInitState] = useState(true);
-
-    useFrame((state) => {
-        if (isInitState) {
-            ref.current.position.x = xFactor;
-            ref.current.position.y = zFactor;
-            setIsInitState(false);
-        }
-        const t = state.clock.getElapsedTime();
-        ref.current.rotation.z = t / 2 * 3.14 + xRotFactor;
-
-        if (ref.current.position.x > 170) {
-            ref.current.position.x = -170;
-        } else if (ref.current.position.x < -170) {
-            ref.current.position.x = 170;
-        }
-
-        if (ref.current.position.y > 90) {
-            ref.current.position.y = -90;
-        } else if (ref.current.position.y < -90) {
-            ref.current.position.y = 90;
-        }
-
-        ref.current.position.x += xSpeed;
-        ref.current.position.y += zSpeed;
-    });
-
-    return (<group>
-        <Instance ref={ref}/>
-    </group>)
 }
