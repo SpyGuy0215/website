@@ -13,7 +13,9 @@ function SmoothScrolling({children}) {
     else{
         // disable smooth scrolling on macOS
         return(
-            {children}
+            <ReactLenis root options={{lerp: 1, smoothWheel: false}}>
+                {children}
+            </ReactLenis>
         )
     }
 }

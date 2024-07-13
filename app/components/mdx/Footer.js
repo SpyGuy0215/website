@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 export default function Footer() {
     return (
-        <div className={'w-screen h-24 border-t flex flex-row'}>
+        <div className={'w-screen h-24 border-t flex flex-row bg-slate-50'}>
             <div className={'w-1/2 border-r h-full flex'}>
                 <p className={'self-center mx-auto text-center font-inter'}>©2024 Shashank Prasanna. All Rights Reserved.</p>
             </div>
