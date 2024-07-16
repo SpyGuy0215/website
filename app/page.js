@@ -5,7 +5,6 @@ import Image from "next/image"
 import gsap from "gsap";
 import {motion} from "framer-motion";
 import {isChrome, isEdge} from "react-device-detect";
-import {useGlitch} from "react-powerglitch";
 import {useRouter} from "next/navigation";
 
 import './page.css';
@@ -18,15 +17,6 @@ export default function Home() {
     const primaryCursorRef = useRef();
     const secondaryCursorRef = useRef();
     const mainRef = useRef();
-    const glitch = useGlitch({
-        "timing": {
-            'easing': 'ease-in-out',
-            'duration': 5000,
-        },
-        'slice': {
-            hueRotate: true,
-        }
-    });
     const router = useRouter();
     const slides = [
         {
@@ -169,7 +159,7 @@ export default function Home() {
                 <div id={'bottom-bar'} className={'flex flex-row absolute w-screen bottom-20 items-center h-[100px]'}>
                     <div id={'bottom-box-1'} className={'basis-1/3 h-full flex items-center justify-center'}>
                         <div id={'titles'} className={'backdrop-blur-md rounded-2xl py-3 px-6 flex text-center'}>
-                            <h1 className={'font-inter text-white text-3xl md:text-5xl'} ref={glitch.ref}>Fullstack
+                            <h1 className={'font-inter text-white text-3xl md:text-5xl'}>Fullstack
                                 Developer</h1>
                         </div>
                     </div>
