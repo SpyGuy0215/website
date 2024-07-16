@@ -1,0 +1,49 @@
+import MdxLayout from "@/app/components/mdx/mdx-layout";
+import Image from "next/image";
+
+# Firefox's New Ad Setting & Its Important Privacy Implications
+
+
+## The Basics
+Seemingly just a month after they acquired the advertising-related company [Anonym](https://blog.mozilla.org/en/mozilla/mozilla-anonym-raising-the-bar-for-privacy-preserving-digital-advertising/),
+Mozilla implemented a new feature into their popular Firefox web browser. Under the new "Website Advertising Preferences" section in the
+Privacy and Security section of Firefox settings (go turn it off now if you haven't already!), you will be able to see a new setting called
+"Allow websites to perform privacy-preserving ad measurement". Mozilla says its an "experimental" feature, but one can note
+that its enabled on the latest *stable* version, Firefox 128, by default.
+
+<Image
+    src="/posts/firefox-privacy-preserving-ads/firefox-settings.png"
+    alt="Firefox's new privacy-preserving ad setting"
+    width={1000}
+    height={600}
+    className={'mt-10 mb-5'}
+/>
+###### I have it turned off here, but it's on by default
+
+## Why is it here?
+
+Co-authored by Meta and **enabled by default**, this setting allows websites to track their ad performance. Notably, it does not allow
+websites to track who you are, as the name suggests. However, it is something that *does not* benefit the end-user and is instead something
+for the money-making ad agencies and buyers of the world to profit off of. They can now track how well their ads are doing on Firefox much
+easier, which of course allows them to optimize them for their own profits.
+
+The reason for adding this feature is really anyone's guess right now, as Mozilla has not released an official statement as to why they
+have a non-privacy-focused feature enabled by default in their browser. However, it is likely that it is due to the acquisition of Anonym as
+well as pressure from advertising agencies. Money is a powerful motivator, and it seems they might have caved into it.
+
+Another bombshell is the exact reason regarding *why* the feature is opt-out. A Mozilla developer is quoted as saying that the feature is
+enabled by default from Firefox 128 because its much easier for them to do that and for users to discover and turn off the feature through
+the blog post and other internet sources than it is for Firefox to prompt users to turn it on.
+
+## The Implications
+
+Of course, this setting and feature in general is not too bad. You still have a reasonable amount of privacy under it, and it's not as bad
+as other settings that are opt-out in other browsers. However, Firefox is widely regarded as one of the most privacy-focused mainstream
+browsers, and this is certainly a step in the wrong direction. Given that they've let this go in, who knows what else they would add in
+just for the benefit of ad agencies and buyers? Since it now is in their financial interest, Mozilla could easily turn into a fallen angel
+in the world of internet privacy.
+
+
+export default function MDXPage({children}) {
+    return <MdxLayout>{children}</MdxLayout>;
+}
