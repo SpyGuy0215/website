@@ -19,10 +19,8 @@ export default function RootLayout({children}) {
         <>
             <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
             <html lang="en" className={`ff-no-scrollbar ${inter.variable}`}>
-                <body>
-                    <SmoothScrolling>
-                        {children}
-                    </SmoothScrolling>
+                <body className={'scroll-smooth'}>
+                    {children}
                 </body>
             </html>
         </>
