@@ -62,8 +62,8 @@ export default function Home() {
         }
     ];
     const duplicatedSlides = [...slides, ...slides, ...slides];
-    const rawParticleCount = 20;
-    const particleCount = Array.from({length: rawParticleCount}, (x, idx ) => idx)
+    const rawParticleCount = 10;
+    const particleCount = Array.from({length: rawParticleCount}, (x, idx) => idx)
 
     useEffect(() => {
         // client-side code
@@ -141,9 +141,12 @@ export default function Home() {
                      ref={secondaryCursorRef}/>
                 <div id={'section-1'}
                      className={'section-1 flex min-h-screen w-screen'}>
-                    <div id={'shape-canvas'} className={'absolute -z-10 h-screen w-screen'}>
+                    <div id={'shape-canvas'} className={'absolute -z-10 h-screen w-screen overflow-hidden'}>
                         {
-                            particleCount.map(idx => <Square key={idx} height={16} width={16}/>)
+                            particleCount.map(idx => <Shape type={'square'} key={idx} height={16} width={16}/>)
+                        }
+                        {
+                            particleCount.map(idx => <Shape type={'triangle'} key={idx} height={16} width={16}/>)
                         }
                     </div>
                     <h1 className={'mx-auto my-auto font-inter font-bold text-blue-500 text-7xl sm:text-9xl lg:text-main-title-xl'}>
@@ -208,7 +211,7 @@ export default function Home() {
                     </div>
                 </div>
                 <div id={'section-2'}
-                     className={'section-2 min-w-full flex flex-col'}>
+                     className={'section-2 min-w-full flex flex-col z-10'}>
                     <h1 className={'font-bold font-inter text-white text-6xl sm:text-8xl mx-auto mt-10 text-center'}>
                         About Me
                     </h1>
@@ -295,18 +298,24 @@ export default function Home() {
     }
 }
 
-function Square({height=10, width=10}) {
+function Shape({type}) {
     const ref = useRef();
-    let xPos = Math.random()*(window.innerWidth);
-    let yPos = Math.random()*(window.innerHeight);
-    let rot = Math.random()*360;
-    let velocity = Math.random() *(3+3) - 3;
+    let xPos = Math.random() * (window.innerWidth);
+    let yPos = Math.random() * (window.innerHeight);
+    let rot = Math.random() * 360;
+    const xVelocity = Math.random() * (3 + 3) - 3;
+    const yVelocity = Math.random() * (3 + 3) - 3;
+    const rotationVelocity = Math.random() * (2 + 2) - 2;
 
     useAnimationFrame((time, delta) => {
-        xPos += velocity;
-        yPos += velocity;
-        rot += velocity;
-        xPos > window.innerWidth + 100  ? xPos = -100 : null;
+        xPos += xVelocity;
+        yPos += yVelocity;
+        if(type !== 'circle') {
+            rot += rotationVelocity;
+        }
+
+        // bounds checking
+        xPos > window.innerWidth + 100 ? xPos = -100 : null;
         xPos < -100 ? xPos = window.innerWidth + 100 : null;
         yPos > window.innerHeight + 100 ? yPos = -100 : null;
         yPos < -100 ? yPos = window.innerHeight + 100 : null;
@@ -314,7 +323,45 @@ function Square({height=10, width=10}) {
         ref.current.style.transform = `translate(${xPos}px, ${yPos}px) rotate(${rot}deg`
     })
 
-    return (
-        <div ref={ref} className={`h-24 w-24 bg-white absolute`} />
-    )
+    if (type === 'square') {
+        return (
+            <motion.div ref={ref} className={`h-24 w-24 bg-white absolute`}/>
+        )
+    }
+    else if (type === 'circle') {
+        return (
+            <div ref={ref} className={`h-24 w-24 bg-white rounded-full absolute`}/>
+        )
+    }
+    else if (type === 'triangle') {
+        return (
+            <div ref={ref} className={`triangle`}/>
+        )
+    }
 }
+
+// function Square({height=10, width=10}) {
+//     const ref = useRef();
+//     let xPos = Math.random()*(window.innerWidth);
+//     let yPos = Math.random()*(window.innerHeight);
+//     let rot = Math.random()*360;
+//     let velocity = Math.random() *(3+3) - 3;
+//
+//     useAnimationFrame((time, delta) => {
+//         xPos += velocity;
+//         yPos += velocity;
+//         rot += velocity;
+//
+//         // bounds checking
+//         xPos > window.innerWidth + 100  ? xPos = -100 : null;
+//         xPos < -100 ? xPos = window.innerWidth + 100 : null;
+//         yPos > window.innerHeight + 100 ? yPos = -100 : null;
+//         yPos < -100 ? yPos = window.innerHeight + 100 : null;
+//
+//         ref.current.style.transform = `translate(${xPos}px, ${yPos}px) rotate(${rot}deg`
+//     })
+//
+//     return (
+//         <div ref={ref} className={`h-24 w-24 bg-white absolute`} />
+//     )
+// }

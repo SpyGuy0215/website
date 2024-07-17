@@ -22,12 +22,17 @@ module.exports = {
             },
             animation: {
                 'highlight': 'highlight 0.5s forwards',
+                'footer-expand': '0.5s forwards footer-expand'
             },
             keyframes: {
                 highlight: {
                     '0%': {filter: 'invert(0)'},
                     '100%': {filter: 'invert(1)'}
                 },
+                'footer-expand': {
+                    '0%': {transform: 'scale(1)'},
+                    '100%': {transform: 'scale(1.25)'}
+                }
             }
         },
     },

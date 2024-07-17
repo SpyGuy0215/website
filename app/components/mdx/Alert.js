@@ -1,11 +1,11 @@
 export default function Alert({children, type = 'info'}) {
     return (
         <>
-            <div className={'my-5'}>
+            <div>
                 {type === 'info' && (
                     <div className={'bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4'} role="alert">
-                        <p className={'font-bold text-2xl mb-3 font-inter'}>Info</p>
-                        <div className={'text-black font-inter'}>
+                        <p className={'font-bold text-2xl font-inter'}>Info</p>
+                        <div className={'text-black font-inter -my-5'}>
                             {children}
                         </div>
                     </div>
