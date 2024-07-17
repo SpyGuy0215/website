@@ -3,7 +3,7 @@
 import {useState, useRef, useEffect} from 'react';
 import Image from "next/image"
 import gsap from "gsap";
-import {motion} from "framer-motion";
+import {motion, useAnimate, useAnimationFrame} from "framer-motion";
 import {isChrome, isEdge} from "react-device-detect";
 import {useRouter} from "next/navigation";
 
@@ -40,10 +40,6 @@ export default function Home() {
                          width={carouselImageDimensions} height={carouselImageDimensions}/>
         },
         {
-            icon: <Image src={'/icons/framer.svg'} alt={'arduino'} className={'invert'} width={carouselImageDimensions}
-                         height={carouselImageDimensions}/>
-        },
-        {
             icon: <Image src={'/icons/java.svg'} alt={'arduino'} className={'invert'} width={carouselImageDimensions}
                          height={carouselImageDimensions}/>
         },
@@ -66,9 +62,8 @@ export default function Home() {
         }
     ];
     const duplicatedSlides = [...slides, ...slides, ...slides];
-    const particleInfo = {
-        'count': 12,
-    }
+    const rawParticleCount = 20;
+    const particleCount = Array.from({length: rawParticleCount}, (x, idx ) => idx)
 
     useEffect(() => {
         // client-side code
@@ -146,7 +141,10 @@ export default function Home() {
                      ref={secondaryCursorRef}/>
                 <div id={'section-1'}
                      className={'section-1 flex min-h-screen w-screen'}>
-                    <div className={'absolute -z-10 h-screen w-screen'}>
+                    <div id={'shape-canvas'} className={'absolute -z-10 h-screen w-screen'}>
+                        {
+                            particleCount.map(idx => <Square key={idx} height={16} width={16}/>)
+                        }
                     </div>
                     <h1 className={'mx-auto my-auto font-inter font-bold text-blue-500 text-7xl sm:text-9xl lg:text-main-title-xl'}>
                         Shashank
@@ -214,7 +212,7 @@ export default function Home() {
                     <h1 className={'font-bold font-inter text-white text-6xl sm:text-8xl mx-auto mt-10 text-center'}>
                         About Me
                     </h1>
-                    <div id={'image-scroller'} className={'relative w-full overflow-hidden mt-10'}>
+                    <div id={'image-scroller'} className={'relative w-full overflow-hidden mt-16'}>
                         <motion.div className={'flex'} animate={{
                             x: ['-100%', '0%'],
                             transition: {
@@ -235,7 +233,7 @@ export default function Home() {
                             }
                         </motion.div>
                     </div>
-                    <div id={'about-me-info'} className={'mt-10 mx-5'}>
+                    <div id={'about-me-info'} className={'mt-16 mx-5'}>
                         <div className={'flex flex-row justify-between mb-20'}>
                             <h1 className={'text-white font-inter text-4xl sm:text-5xl w-1/2 font-bold'}>Fullstack Software
                                 Developer</h1>
@@ -295,4 +293,28 @@ export default function Home() {
             </div>
         )
     }
+}
+
+function Square({height=10, width=10}) {
+    const ref = useRef();
+    let xPos = Math.random()*(window.innerWidth);
+    let yPos = Math.random()*(window.innerHeight);
+    let rot = Math.random()*360;
+    let velocity = Math.random() *(3+3) - 3;
+
+    useAnimationFrame((time, delta) => {
+        xPos += velocity;
+        yPos += velocity;
+        rot += velocity;
+        xPos > window.innerWidth + 100  ? xPos = -100 : null;
+        xPos < -100 ? xPos = window.innerWidth + 100 : null;
+        yPos > window.innerHeight + 100 ? yPos = -100 : null;
+        yPos < -100 ? yPos = window.innerHeight + 100 : null;
+
+        ref.current.style.transform = `translate(${xPos}px, ${yPos}px) rotate(${rot}deg`
+    })
+
+    return (
+        <div ref={ref} className={`h-24 w-24 bg-white absolute`} />
+    )
 }

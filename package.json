@@ -40,6 +40,7 @@
     "three": "^0.164.1"
   },
   "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "postcss": "^8",
