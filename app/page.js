@@ -3,8 +3,8 @@
 import {useState, useRef, useEffect} from 'react';
 import Image from "next/image"
 import gsap from "gsap";
-import {motion, useAnimate, useAnimationFrame} from "framer-motion";
-import {isChrome, isEdge} from "react-device-detect";
+import {motion, useAnimationFrame} from "framer-motion";
+import {isChrome, isEdge, isMobile} from "react-device-detect";
 import {useRouter} from "next/navigation";
 
 import './page.css';
@@ -62,7 +62,7 @@ export default function Home() {
         }
     ];
     const duplicatedSlides = [...slides, ...slides, ...slides];
-    const rawParticleCount = 10;
+    const rawParticleCount = isMobile ? 4 : 10; // number of particles (per type)
     const particleCount = Array.from({length: rawParticleCount}, (x, idx) => idx)
 
     useEffect(() => {
@@ -73,9 +73,10 @@ export default function Home() {
             document.body.classList.add('scrollbar-none'); // removes scrollbar on Chrome and Edge
         } // Firefox class is already applied for no scrollbar
 
-        // event listener to update custom cursor
-        window.addEventListener('mousemove', updateMouse);
-
+        // event listener to update custom cursor (on desktop)
+        if (!isMobile) {
+            window.addEventListener('mousemove', updateMouse);
+        }
     }, [])
 
     function updateMouse(e) {
@@ -94,7 +95,7 @@ export default function Home() {
     }
 
     function handleHover(hovering, invert = false, invertID = null) {
-        if (hovering) {
+        if (hovering && !isMobile) {
             primaryCursorRef.current.style.opacity = 0;
             secondaryCursorRef.current.style.backgroundColor = '#60a5fa';
             secondaryCursorRef.current.style.mixBlendMode = 'difference';
@@ -134,11 +135,12 @@ export default function Home() {
         return (
             <div id={'main-div'} className={'overflow-hidden flex flex-col h-fit cursor-none'}
                  ref={mainRef}>
-                <div id={'primaryCursor'} className={'bg-blue-300 fixed h-3 w-3 rounded-full z-30 pointer-events-none'}
+                <div id={'primaryCursor'} className={'invisible md:visible bg-blue-300 fixed h-3 w-3 rounded-full z-30 pointer-events-none'}
                      ref={primaryCursorRef}/>
                 <div id={'secondaryCursor'}
-                     className={'border-2 border-blue-400 fixed h-8 w-8 rounded-full z-20 pointer-events-none'}
+                     className={'invisible md:visible border-2 border-blue-400 fixed h-8 w-8 rounded-full z-20 pointer-events-none'}
                      ref={secondaryCursorRef}/>
+
                 <div id={'section-1'}
                      className={'section-1 flex min-h-screen w-screen'}>
                     <div id={'shape-canvas'} className={'absolute -z-10 h-screen w-screen overflow-hidden'}>
@@ -157,8 +159,8 @@ export default function Home() {
                         <h1 className={'font-inter font-bold text-blue-100 text-5xl'}> Hey, I'm</h1>
                     </div>
                 </div>
-                <div id={'bottom-bar'} className={'flex flex-row absolute w-screen bottom-20 items-center h-[100px]'}>
-                    <div id={'bottom-box-1'} className={'basis-1/3 h-full flex items-center justify-center'}>
+                <div id={'bottom-bar'} className={'flex flex-row absolute w-screen bottom-0 md:bottom-20 items-center h-[100px]'}>
+                    <div id={'bottom-box-1'} className={'basis-1/3 h-full flex items-center justify-center mx-2'}>
                         <div id={'titles'} className={'backdrop-blur-md rounded-2xl py-3 px-6 flex text-center'}>
                             <h1 className={'font-inter text-white text-3xl md:text-5xl'}>Fullstack
                                 Developer</h1>
@@ -173,7 +175,7 @@ export default function Home() {
                     </div>
                     <div id={'bottom-box-3'} className={'basis-1/3 h-full flex items-center justify-center'}>
                         <div id={'socials'}
-                             className={'backdrop-blur-md rounded-2xl flex flex-col sm:flex-row scale-90 sm:scale-100'}>
+                             className={'backdrop-blur-md rounded-2xl flex flex-col sm:flex-row scale-75 sm:scale-100'}>
                             <button className={'mx-2 my-2'} onClick={() => {
                                 router.push('https://www.github.com/SpyGuy0215')
                             }} onMouseOver={() => {
@@ -236,19 +238,21 @@ export default function Home() {
                             }
                         </motion.div>
                     </div>
-                    <div id={'about-me-info'} className={'mt-16 mx-5'}>
-                        <div className={'flex flex-row justify-between mb-20'}>
-                            <h1 className={'text-white font-inter text-4xl sm:text-5xl w-1/2 font-bold'}>Fullstack Software
+                    <div id={'about-me-info'} className={'mt-16 sm:mx-5'}>
+                        <div className={'flex flex-col sm:flex-row justify-between mb-20'}>
+                            <h1 className={'text-white font-inter text-center sm:text-left text-4xl sm:text-5xl sm:w-1/2 font-bold'}>Fullstack
+                                Software
                                 Developer</h1>
-                            <p className={'text-white font-inter w-1/2 text-lg text-right sm:text-left sm:text-3xl leading-10 justify-center'}>
+                            <p className={'text-white font-inter text-center mt-4 sm:mt-0 sm:text-left sm:w-1/2 text-lg sm:text-3xl sm:leading-10 justify-center'}>
                                 I am well-versed in a number of front-end technologies like NextJS and Tailwind, and can
                                 connect them to powerful backend solutions built with tools like Python, Java, and
                                 Firebase.
                             </p>
                         </div>
-                        <div className={'flex flex-row justify-between mb-20'}>
-                            <h1 className={'text-white font-inter text-4xl sm:text-5xl w-1/2 font-bold'}>Hardware Enthusiast</h1>
-                            <p className={'text-white font-inter w-1/2 text-lg text-right sm:text-left sm:text-3xl leading-10'}>
+                        <div className={'flex flex-col sm:flex-row justify-between mb-20'}>
+                            <h1 className={'text-white font-inter text-center sm:text-left text-4xl sm:text-5xl sm:w-1/2 font-bold'}>Hardware
+                                Enthusiast</h1>
+                            <p className={'text-white font-inter text-center mt-4 sm:mt-0 sm:text-left sm:w-1/2 text-lg sm:text-3xl sm:leading-10 justify-center'}>
                                 I am knowledgeable on hardware platforms like Arduino and Raspberry Pi, and can create
                                 custom
                                 solutions linking to the cloud, IoT, Bluetooth, and more. I can integrate these systems
@@ -257,9 +261,10 @@ export default function Home() {
                                 capabilities.
                             </p>
                         </div>
-                        <div className={'flex flex-row justify-between mb-20'}>
-                            <h1 className={'text-white font-inter text-4xl sm:text-5xl w-1/2 font-bold'}>Junior in High School</h1>
-                            <p className={'text-white font-inter w-1/2 text-lg text-right sm:text-left sm:text-3xl leading-10'}>
+                        <div className={'flex flex-col sm:flex-row justify-between mb-20'}>
+                            <h1 className={'text-white font-inter text-center sm:text-left text-4xl sm:text-5xl sm:w-1/2 font-bold'}>Junior
+                                in High School</h1>
+                            <p className={'text-white font-inter text-center mt-4 sm:mt-0 sm:text-left sm:w-1/2 text-lg sm:text-3xl sm:leading-10 justify-center'}>
                                 Motivated learner, taking AP Computer Science A, AP Calculus AB, and AP Biology.
                                 Currently
                                 have a 4.0 GPA. Plan to further my education in the field of computer science and
@@ -310,7 +315,7 @@ function Shape({type}) {
     useAnimationFrame((time, delta) => {
         xPos += xVelocity;
         yPos += yVelocity;
-        if(type !== 'circle') {
+        if (type !== 'circle') {
             rot += rotationVelocity;
         }
 
@@ -327,13 +332,11 @@ function Shape({type}) {
         return (
             <motion.div ref={ref} className={`h-24 w-24 bg-white absolute`}/>
         )
-    }
-    else if (type === 'circle') {
+    } else if (type === 'circle') {
         return (
             <div ref={ref} className={`h-24 w-24 bg-white rounded-full absolute`}/>
         )
-    }
-    else if (type === 'triangle') {
+    } else if (type === 'triangle') {
         return (
             <div ref={ref} className={`triangle`}/>
         )
