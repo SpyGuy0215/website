@@ -1,10 +1,14 @@
+// tailwind.config.js
+import {heroui} from "@heroui/react";
+
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const config = {
     content: [
         "./pages/**/*.{js,ts,jsx,tsx,md,mdx}",
         "./components/**/*.{js,ts,jsx,tsx,md,mdx}",
         "./app/**/*.{js,ts,jsx,tsx,md,mdx}",
         "./*.{js,ts,jsx,tsx,md,mdx}",
+        "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}"
     ],
     theme: {
         extend: {
@@ -19,6 +23,8 @@ module.exports = {
             fontFamily: {
                 inter: ['var(--font-inter)'],
                 raleway: ["Raleway", "sans-serif"],
+                poppins: ['var(--font-poppins)'],
+                ubuntu: ['var(--font-ubuntu)'],
             },
             animation: {
                 'highlight': 'highlight 0.5s forwards',
@@ -36,9 +42,10 @@ module.exports = {
             }
         },
     },
-    plugins: [
-        require('tailwind-scrollbar')({nocompatible: true, preferredStrategy: "pseudoelements"}),
-        require('tailwind-scrollbar-hide'),
-        require('@tailwindcss/typography'),
-    ],
-};
+    darkMode: "class",
+    plugins: [heroui({
+
+    })]
+}
+
+export default config;

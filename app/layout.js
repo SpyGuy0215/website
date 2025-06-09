@@ -1,13 +1,30 @@
 import SmoothScrolling from "@/app/components/SmoothScrolling";
-import {Inter} from 'next/font/google'
+import {Provider} from '@/components/ui/provider';
+import {Inter, Poppins, Ubuntu_Mono} from 'next/font/google'
 
 import "./globals.css";
+import {Providers} from "./providers";
 
 const inter = Inter({
     subsets: ['latin'],
     display: 'swap',
     variable: '--font-inter',
 })
+
+const poppins = Poppins({
+    subsets: ['latin'],
+    display: 'swap',
+    variable: '--font-poppins',
+    weight: '700'
+})
+
+const ubuntu = Ubuntu_Mono({
+    subsets: ['latin'],
+    display: 'swap',
+    variable: '--font-ubuntu',
+    weight: '400',
+})
+
 
 export const metadata = {
     title: "Shashank Prasanna",
@@ -18,7 +35,7 @@ export default function RootLayout({children}) {
     return (
         <>
             <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-            <html lang="en" className={`ff-no-scrollbar ${inter.variable}`}>
+            <html lang="en" className={`${inter.variable} ${poppins.variable} ${ubuntu.variable}`} suppressHydrationWarning>
                 <body className={'scroll-smooth'}>
                     {children}
                 </body>

@@ -6,6 +6,9 @@ import createMDX from "@next/mdx";
 const nextConfig = {// Configure `pageExtensions` to include MDX files
     pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
     // Optionally, add any other Next.js config below};
+    experimental:{
+        optimizePackageImports: ["@chakra-ui/react"],
+    }
 }
 
 const withMDX = createMDX({
