@@ -1,4 +1,3 @@
-import SmoothScrolling from "@/app/components/SmoothScrolling";
 import {Provider} from '@/components/ui/provider';
 import {Inter, Poppins, Ubuntu_Mono} from 'next/font/google'
 
