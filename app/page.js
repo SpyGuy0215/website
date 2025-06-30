@@ -10,6 +10,8 @@ import {useRouter} from "next/navigation";
 import './page.css';
 import {Card, CardBody, CardHeader, Spinner, Tab, Tabs} from "@heroui/react";
 import Carousel from "@/app/components/Carousel";
+import Footer from "@/app/components/Footer";
+import {addView, addDevView} from "@/app/helper/firebase/views";
 
 // array of ProjectDisplay components
 const projectSlides = [
@@ -61,6 +63,13 @@ export default function Home() {
         // event listener to update custom cursor (on desktop)
         if (!isMobile) {
             window.addEventListener('mousemove', updateMouse);
+        }
+
+        if(process.env.NODE_ENV === "development"){
+            addDevView();
+        }
+        else{
+            addView();
         }
     }, [])
 
@@ -127,7 +136,7 @@ export default function Home() {
                      className={'invisible md:visible border-2 border-blue-400 fixed h-8 w-8 rounded-full z-20 pointer-events-none'}
                      ref={secondaryCursorRef}/>
 
-                <div id={'section-1 '}
+                <div id={'section-1'}
                      className={'flex flex-col h-svh w-full overflow-x-hidden'}>
                     <div id={'shape-canvas'} className={'absolute z-10 h-screen w-full overflow-hidden'}>
                         {
@@ -290,6 +299,7 @@ export default function Home() {
                 <div id={'section-4'} className={'flex h-fit w-full mb-32'}>
                     <Carousel slides={projectSlides}/>
                 </div>
+                <Footer />
             </div>
 
         )
@@ -362,9 +372,9 @@ function TechDisplay({title, icon, years, invert = false}) {
                 <Image src={icon} alt={title} width={imgSize} height={imgSize} className={invertStr}/>
                 <div className={'ml-2 sm:ml-8'}>
                     <CardHeader className={'flex flex-col'}>
-                        <text className={'font-inter font-semibold text-white sm:text-3xl mr-auto'}>{title}</text>
-                        <text
-                            className={'font-inter font-normal text-gray-400 sm:text-xl mr-auto'}>{years} {years === 1 ? "year" : "years"}</text>
+                        <p className={'font-inter font-semibold text-white sm:text-3xl mr-auto'}>{title}</p>
+                        <p
+                            className={'font-inter font-normal text-gray-400 sm:text-xl mr-auto'}>{years} {years === 1 ? "year" : "years"}</p>
                     </CardHeader>
                 </div>
             </CardBody>
