@@ -26,7 +26,7 @@
     "color2k": "^2.0.3",
     "embla-carousel-react": "^8.6.0",
     "firebase": "^11.9.1",
-    "framer-motion": "^11.18.2",
+    "framer-motion": "^12.23.0",
     "gray-matter": "^4.0.3",
     "gsap": "^3.12.5",
     "mathjs": "^12.4.2",

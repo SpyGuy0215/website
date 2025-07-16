@@ -20,6 +20,10 @@ const config = {
                 "gradient-conic":
                     "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
             },
+            colors: {
+                'quasar-dark': '#1a1a1a',
+                'quasar-dark-border': '#333333',
+            },
             fontFamily: {
                 inter: ['var(--font-inter)'],
                 raleway: ["Raleway", "sans-serif"],
@@ -27,8 +31,9 @@ const config = {
                 ubuntu: ['var(--font-ubuntu)'],
             },
             animation: {
-                'highlight': 'highlight 0.5s forwards',
-                'footer-expand': '0.5s forwards footer-expand'
+                highlight: 'highlight 0.5s forwards',
+                'footer-expand': '0.5s forwards footer-expand',
+                shine: 'shine 5s linear infinite',
             },
             keyframes: {
                 highlight: {
@@ -38,14 +43,19 @@ const config = {
                 'footer-expand': {
                     '0%': {transform: 'scale(1)'},
                     '100%': {transform: 'scale(1.25)'}
-                }
+                },
+                shine: {
+                    '0%': {'background-position': '100%'},
+                    '100%': {'background-position': '-100%'},
+                },
+            },
+            transition: {
+                width: 'width'
             }
         },
     },
     darkMode: "class",
-    plugins: [heroui({
-
-    })]
+    plugins: [heroui({})]
 }
 
 export default config;
